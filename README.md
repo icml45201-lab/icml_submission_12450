@@ -1,135 +1,86 @@
-Reviewer Guide & Version History: Continuous-Time Koopman Autoencoders
+# Supplementary Material: ICML 2026 Submission 12450
+**Koopman Autoencoders with Continuous-Time Latent Dynamics for Fluid Dynamics Forecasting**
 
-This document provides a comprehensive, academic overview of the major methodological additions, theoretical proofs, and empirical validations introduced in the latest revision of the manuscript: "Koopman Autoencoders with Continuous-Time Latent Dynamics for Fluid Dynamics Forecasting".
+This anonymous repository serves as an extended appendix to our official author rebuttal. Due to strict text-only formatting and character limits in the review portal, we provide our newly conducted ablation studies, expanded benchmarking tables, and high-resolution spatial/spectral analyses here. 
 
-Note on Anonymity: This document conforms to double-blind review standards and contains no identifying author information.
+All data and figures enclosed directly address reviewer inquiries regarding theoretical boundaries, architectural design choices, and empirical baselines.
 
-Executive Summary of Revisions
+---
 
-To rigorously address the complex trade-offs between highly expressive generative models (e.g., autoregressive diffusion models like ACDM) and deterministic, structured representations, this revision introduces extreme long-horizon stress tests ($T=1000$), spectral bias analyses, and theoretical proofs of stability.
+## 1. Operator Parameterization and Temporal Weighting Ablations
+**Addressing Reviewer Feedback:** *Reviewer z2Gs requested empirical ablations justifying the use of the LoRA parameterization over a full-rank MLP, as well as the necessity of the cosine temporal weighting schedule.*
 
-We demonstrate mathematically and empirically that while state-of-the-art diffusion models achieve marginal gains in short-term, high-frequency textural synthesis, they suffer from catastrophic error accumulation and structural collapse over extended horizons. In contrast, our proposed Continuous-Time Koopman Autoencoder (KAE) enforces strict linear latent constraints that guarantee massive computational efficiency and asymptotic long-horizon stability.
+We evaluated our default architecture against a full-rank MLP parameterization ($\mathbf{K}_{\text{cont}} = \text{MLP}(\phi)$), which predicts the entire $N_z \times N_z$ generator matrix from the physical conditions. We also ablated the temporal rollout loss, comparing our decaying Cosine schedule against a Uniform weighting.
 
-1. Methodological Enhancements & Theoretical Grounding
+### Empirical Results
+As demonstrated in Table 1, while the full-rank MLP successfully preserves the linear latent space required for $O(1)$ matrix exponentiation, it severely overfits the training regimes. This results in significantly degraded performance on extrapolation tasks (e.g., $Inc_{low}$ MSE increases from $1.3 \times 10^{-4}$ to $10.4 \times 10^{-4}$). 
 
-The methodology has been substantially formalized to define the structural constraints that enable our model's stability.
+Our proposed **LoRA parameterization** anchors the dynamics to a globally stable base matrix ($\mathbf{K}_0$). This acts as a powerful structural regularizer, enabling robust extrapolation across unseen Reynolds and Mach numbers while vastly reducing the parameter footprint to $O(2rN_z)$. 
 
-1.1. Parameterization via Low-Rank Adaptation (LoRA)
+Furthermore, the **Cosine weighting schedule** strictly outperforms uniform weighting on the highly chaotic Transonic dataset. By forcing the model to prioritize strict local phase alignment in early epochs, it prevents chaotic compounding errors and improves long-horizon $Tra_{long}$ MSE from $17.0 \times 10^{-3}$ to $14.9 \times 10^{-3}$.
 
-To avoid the severe VRAM fragmentation and overfitting associated with full-rank conditioning matrices ($O(N_z^2)$ parameters), we introduce a LoRA-parameterized Koopman generator. The continuous-time operator is formulated as $\mathbf{K}_{\text{cont}}(\phi) = \mathbf{K}_{0} + \mathcal{N}_\psi(\phi)$, where $\mathbf{K}_0$ captures invariant global dynamics and $\mathcal{N}_\psi$ provides low-rank ($O(2rN_z)$) regime-specific adaptations. This acts as a powerful structural regularizer.
+**Table 1: Ablation Study on Operator Parameterization and Temporal Weighting**
 
-1.2. Continuous-Time Generalization of Koopman Consistency (New Proof)
+| Parameterization | Weighting Schedule | $Inc_{low}$ MSE ($\times 10^{-4}$) | $Inc_{high}$ MSE ($\times 10^{-5}$) | $Tra_{ext}$ MSE ($\times 10^{-3}$) | $Tra_{int}$ MSE ($\times 10^{-3}$) | $Tra_{long}$ MSE ($\times 10^{-3}$) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **LoRA (Proposed)** | **Cosine** | **1.3 ± 1.7** | 2.9 ± 1.1 | **2.2 ± 0.9** | **5.2 ± 2.4** | **14.9 ± 1.3** |
+| LoRA | Uniform | 1.3 ± 1.7 | 2.9 ± 1.1 | 2.5 ± 0.8 | 6.5 ± 1.6 | 17.0 ± 2.3 |
+| MLP (Full-Rank) | Cosine | 10.4 ± 17.5 | 21.4 ± 7.1 | 3.6 ± 1.0 | 5.7 ± 3.0 | 15.1 ± 1.9 |
 
-We provide a mathematical proof (Appendix G) demonstrating that our proposed continuous-time latent consistency loss ($\mathcal{L}_{\text{lin}}$) is the exact continuous generalization of the discrete Consistent Koopman Autoencoder framework. Because $B = A^{-1}$ is satisfied by construction via $e^{-K\Delta t} = (e^{K\Delta t})^{-1}$, our formulation intrinsically enforces forward-backward trajectory invertibility.
+---
 
-1.3. Robustness and Physics-Inspired Regularization
+## 2. Expanded Benchmarking and Inference Efficiency
+**Addressing Reviewer Feedback:** *Reviewers requested a broader comparison against standard spatial-temporal PDE surrogates beyond the autoregressive diffusion baseline (ACDM).*
 
-Cosine Weighting Schedule: Replaced uniform temporal weighting with a decaying cosine schedule to strictly enforce local phase alignment before optimizing for asymptotic stability.
+We have expanded our evaluation to include 12 additional baselines, including Fourier Neural Operators (FNO-16, FNO-32), continuous U-Nets, and Graph/Transformer models. 
 
-Physics Constraints: We formally define $\mathcal{L}_{phys}$ through the lens of Temporal Sobolev Loss (velocity matching), Spatial Sobolev Loss (structural gradients), and Spectral Consistency (Fourier domain phase alignment).
+**Table 2: Inference Speed and Long-Horizon Stability Comparison**
+The results below highlight the core Pareto frontier established by our Continuous-Time KAE. While it sacrifices some short-term stochastic expressivity compared to highly non-linear models, the strict linearity of the latent space enables analytical matrix exponentiation. This bypasses iterative ODE solvers, yielding an inference speedup of over 300$\times$ compared to diffusion models, while maintaining bounded, stable predictions over extreme horizons ($Tra_{long}$).
 
-2. Rigorous Empirical Validation
-
-The experimental suite has been expanded to explicitly benchmark the limits of modern PDE surrogate modeling.
-
-2.1. Extreme Long-Horizon Stability ($T=1000$)
-
-To test the absolute limits of the learned latent dynamics, we subjected the models to an extreme 1000-step autoregressive rollout.
-
-
-
-Figure 1: Quantitative metrics over an extreme 1000-step rollout. The unconstrained autoregressive diffusion baseline (ACDM) exhibits severe phase divergence and variance. The Continuous KAE remains strictly bounded by its linear latent dynamics.
-
-
-Figure 2: Visual snapshots. The KAE smoothly diffuses the flow into a stable, physically accurate limit cycle. Conversely, ACDM compounds stochastic errors until the physical structure collapses entirely into numerical noise.
-
-2.2. Spectral Bias and Frequency Smoothing
-
-We formally investigate the "spectral bias" of the $L_2$-optimized deterministic KAE.
-
-
-Figure 3: Temporal and spatial frequency spectra. The KAE acts as a physical low-pass filter, attenuating high-frequency chaotic cascades (right) to guarantee that macroscopic shedding frequencies are preserved with near-zero variance (left).
-
-2.3. Computational Efficiency & Inference Speed
-
-By leveraging the analytical solution of the learned system via matrix exponentiation ($z_{\tau} = \exp(\mathbf{K}_{\text{cont}}\tau) z_0$), our model bypasses iterative ODE solvers entirely.
-
-Table 1: Comprehensive Runtime Comparison (240-step rollout)
-| Architecture | Avg. Step (ms) | Mean VRAM (MB) |
-| :--- | :--- | :--- |
-| KAE (Ours) | $\mathbf{1.04 \times 10^{-3} \pm 10^{-4}}$ | $2751.3$ |
-| FNO-16 | $1.17 \pm 0.01$ | $184.1$ |
-| U-Net-m8 | $6.16 \pm 0.01$ | $184.1$ |
-| ACDM (Diffusion) | $41.77 \pm 0.01$ | $659.2$ |
-
-The KAE achieves speeds orders of magnitude faster than diffusion-based sampling.
-
-2.4. Comprehensive Benchmarking across Regimes
-
-The KAE is benchmarked against a wide array of spatial-autoregressive and continuous models.
-
-Table 2: Quantitative Comparison (MSE and LSiM)
-| Method | $Inc_{low}$ (MSE $\times 10^{-4}$) | $Inc_{high}$ (MSE $\times 10^{-5}$) | $Tra_{ext}$ (MSE $\times 10^{-3}$) | $Tra_{long}$ (MSE $\times 10^{-3}$) |
+| Architecture Paradigm | Model | Avg. Step Inference (ms) | Mean VRAM (MB) | $Tra_{long}$ MSE ($\times 10^{-3}$) |
 | :--- | :--- | :--- | :--- | :--- |
-| $\text{FNO}_{32}$ | $160 \pm 50$ | $1000 \pm 140$ | $4.9 \pm 1.9$ | Diverged |
-| $\text{TF}_{MGN}$ | $5.7 \pm 4.3$ | $10 \pm 2.9$ | $3.9 \pm 1.0$ | $18.9 \pm 4.5$ |
-| U-Net | $1.0 \pm 1.1$ | $2.7 \pm 0.6$ | $3.1 \pm 2.1$ | $30.3 \pm 6.1$ |
-| ACDM | $1.7 \pm 2.2$ | $\mathbf{0.8 \pm 0.4}$ | $2.3 \pm 1.4$ | $22.6 \pm 4.0$ |
-| Continuous KAE | $\mathbf{1.3 \pm 1.7}$ | $2.9 \pm 1.1$ | $\mathbf{2.2 \pm 0.9}$ | $\mathbf{14.9 \pm 1.3}$ |
+| **Spectral / Operator** | FNO-16 | 1.17 ± 0.01 | 184.1 | 20.8 ± 2.0 |
+| | FNO-32 | 1.17 ± 0.00 | 183.9 | *Diverged* |
+| **Convolutional** | ResNet-dil | 3.46 ± 0.02 | 178.6 | 22.0 ± 2.4 |
+| | U-Net (m8) | 6.16 ± 0.01 | 184.1 | 22.2 ± 3.6 |
+| **Attention / Graph** | TF-Enc | 0.60 ± 0.25 | 3448.6 | 22.2 ± 3.9 |
+| | TF-MGN | 0.69 ± 0.01 | 3498.0 | 18.9 ± 4.5 |
+| **Generative (Diffusion)**| ACDM | 41.77 ± 0.01 | 659.2 | 22.6 ± 4.0 |
+| **Continuous Koopman** | **KAE (Ours)** | **0.00104 ± 0.0001** | 2751.3 | **14.9 ± 1.3** |
 
-While generative models (ACDM) capture interpolation textures slightly better, the deterministic KAE significantly outperforms all stochastic baselines over long horizons ($Tra_{long}$).
+---
 
+## 3. The "Closure Problem": Spectral Bias and Extreme Stability
+**Addressing Reviewer Feedback:** *Reviewer Ge7F noted that enforcing a linear ODE in a truncated latent space introduces closure errors when modeling infinite-dimensional chaotic fluid systems.*
 
+We provide a rigorous frequency spectrum analysis to explicitly visualize this structural boundary. The Continuous KAE acts as a physical low-pass filter. As shown in the spatial frequency plot, the KAE exhibits a steeper energy drop-off at high wavenumbers compared to the stochastic baseline, smoothing out fine-scale, unpredictable turbulent textures.
 
-Figure 4: Qualitative validation rollouts showing stable, physically consistent predictions in high-Reynolds incompressible (left) and low-Mach transonic extrapolation (right) regimes.
+However, this spectral bias is the exact mechanism that guarantees our model's extreme stability. It successfully locks onto the dominant macro-scale vortex shedding frequencies (temporal plot) while shedding the chaotic noise that causes autoregressive models to diverge.
 
-3. Deep Dive Analyses (Appendices)
+### Temporal and Spatial Frequency Analysis
+![Spectral Analysis](figures/fig7_premultiplied_grid_longer_250.png)
+*Figure 1: The KAE accurately captures the dominant vortex shedding frequencies (left) but exhibits a steeper energy drop-off at high spatial wavenumbers (right) compared to the stochastic baseline.*
 
-We provide extensive supplementary materials to visually and mathematically deconstruct the model's behavior.
+### Extreme 1000-Step Rollout Stability
+To stress-test this stability, we subjected the models to a 1000-step autoregressive rollout. As the unconstrained diffusion baseline (ACDM) compounds high-frequency stochastic errors, its spatial correlation collapses into unphysical numerical noise. Conversely, the Continuous KAE remains strictly bounded by its linear latent dynamics, degrading gracefully into a stable limit cycle.
 
-3.1. Eigenvalue Spectrum Analysis
+<p align="center">
+  <img src="figures/spatial_correlation_longer.png" width="48%" alt="Spatial Correlation 1000 Steps" />
+  <img src="figures/l2_error_rollout_longer.png" width="48%" alt="L2 Error 1000 Steps" />
+</p>
+*Figure 2: Quantitative metrics over an extreme 1000-step rollout in the chaotic Transonic regime.*
 
-To mathematically prove the KAE's long-horizon stability, we analyze the spectral properties of the learned latent dynamics $\mathbf{K}$.
+---
 
+## 4. Spatial Error Difference Maps
+**Addressing Reviewer Feedback:** *Reviewer z2Gs requested absolute error fields to clearly visualize where the KAE drifts compared to the diffusion baseline.*
 
-Figure 5: The eigenvalue distribution of the learned generator matrix lies predominantly in the left half of the complex plane ($Re(\lambda) < 0$). This guarantees dissipative latent dynamics that naturally suppress unstable growth modes.
+We plot the absolute spatial difference ($|\text{Prediction} - \text{Ground Truth}|$). Because the KAE enforces smooth global structural alignment, its errors are deterministic and localized almost exclusively along sharp spatial discontinuities (the transonic shock fronts). In contrast, the diffusion baseline exhibits diffuse, widespread stochastic noise across the entire fluid domain.
 
-3.2. Spatial Error Distributions & Difference Maps
+### Transonic Interpolation ($Tra_{int}$)
+![Difference Maps Interp](figures/difference_maps_interp.png)
+*Figure 3: Absolute spatial error distribution for the interpolation task. KAE errors are tightly bounded to the shock waves.*
 
-We visualize the fundamental difference in failure archetypes between KAE and Diffusion models.
-
-
-
-Figure 6: KAE errors are structurally coherent, strictly localized along sharp physical discontinuities (e.g., shock fronts). In contrast, ACDM generates diffusely distributed noise that severely corrupts the spatial domain over time.
-
-3.3. Distributional Robustness to Physical Parameters
-
-We visualize error variance as a function of Reynolds number to highlight KAE's resilience.
-
-
-Figure 7: While ACDM exhibits heavy-tailed error distributions in chaotic regimes (indicating periodic catastrophic failure), the KAE maintains tightly controlled variance.
-
-3.4. Temporal Zero-Shot Generalization
-
-Because the dynamics are continuous, the system natively supports evaluation at arbitrary fractional timesteps.
-
-
-Figure 8: Zero-shot temporal super-resolution. The model maintains physical consistency across $\Delta t \in \{0.05s, 0.1s, 0.2s\}$, a feat mathematically impossible for standard discrete-time Koopman operators.
-
-3.5. Validation of $O(1)$ Matrix Exponentiation
-
-We empirically validate that the numerical integration aligns perfectly with our highly efficient analytical solution.
-
-
-Figure 9: The $O(1)$ analytical matrix exponential solution perfectly matches the trajectories generated by rigorous 4th-order Runge-Kutta numerical integration.
-
-3.6. Ablation on Structural Components
-
-An ablation study isolating our parameterization choices confirms that Full-Rank Multi-Layer Perceptrons severely overfit, justifying our use of LoRA.
-
-Table 3: Ablation on Operator Parameterization & Weighting
-| Configuration | $Inc_{low}$ (MSE) | $Tra_{ext}$ (MSE) | $Tra_{long}$ (MSE) |
-| :--- | :--- | :--- | :--- |
-| LoRA + Cosine (Proposed) | $\mathbf{1.3 \times 10^{-4}}$ | $\mathbf{2.2 \times 10^{-3}}$ | $\mathbf{14.9 \times 10^{-3}}$ |
-| LoRA + Uniform | $1.3 \times 10^{-4}$ | $2.5 \times 10^{-3}$ | $17.0 \times 10^{-3}$ |
-| MLP (Full-Rank) + Cosine | $10.4 \times 10^{-4}$ | $3.6 \times 10^{-3}$ | $15.1 \times 10^{-3}$ |
+### Transonic Extrapolation ($Tra_{ext}$)
+![Difference Maps Extrap](figures/difference_maps_extrap.png)
+*Figure 4: Absolute spatial error distribution for the low-Mach extrapolation task.*
