@@ -44,45 +44,65 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 
 ---
 
-### Table A: Inference Speed and Memory Efficiency Profiling
-*Profiling was conducted over a 240-step rollout. The Continuous-Time KAE operates orders of magnitude faster than all evaluated baselines due to $O(1)$ latent state evaluation.*
+## 1. Exhaustive Baseline Benchmarking & $O(1)$ Inference Efficiency
+**Addressed to:** *Reviewers z2Gs, B4CM, RCnK (Requests for broader baseline comparisons beyond diffusion models).*
 
-| Architecture Paradigm | Model | Avg. Step Inference (ms) | Mean VRAM (MB) |
-| :--- | :--- | :--- | :--- |
-| **Graph / Attention** | TF-VAE | $0.30 \pm 0.01$ | $13749.9$ |
-| | TF-Enc | $0.60 \pm 0.25$ | $3448.6$ |
-| | TF-MGN | $0.69 \pm 0.01$ | $3498.0$ |
-| **Neural Operators** | FNO-16 | $1.17 \pm 0.01$ | $184.1$ |
-| | FNO-32 | $1.17 \pm 0.00$ | $183.9$ |
-| **Convolutional** | Dil-ResNet-m2 | $3.46 \pm 0.02$ | $\mathbf{178.6}$ |
-| | ResNet-m2 | $3.67 \pm 0.04$ | $188.0$ |
-| | UNet-m8 | $6.16 \pm 0.01$ | $184.1$ |
-| | UNet-m2 | $6.19 \pm 0.09$ | $183.7$ |
-| | Refiner-R4 | $10.31 \pm 0.02$ | $642.4$ |
-| **Generative / Diffusion** | ACDM$_{ncn}$ | $41.70 \pm 0.06$ | $649.2$ |
-| | ACDM | $41.77 \pm 0.01$ | $659.2$ |
-| **Continuous Koopman** | **KAE (Ours)** | **$\mathbf{0.00104 \pm 0.0001}$** | $2751.3$ |
+We fully agree with the reviewers that contextualizing our Continuous-Time KAE requires a broader lens than autoregressive diffusion models alone. To provide a definitive assessment of our method within the current landscape of PDE forecasting, we conducted a comprehensive benchmarking effort, evaluating **14 distinct spatial-temporal surrogate models**.
+
+To ensure a rigorous analysis, these baselines span four dominant architectural paradigms:
+1.  **Generative / Probabilistic:** ACDM, ACDM$_{ncn}$ (State-of-the-art for high-frequency flow synthesis).
+2.  **Spectral / Neural Operators:** FNO-16, FNO-32 (Standard baselines for resolution-invariant PDE solving).
+3.  **Convolutional / Data-Space Autoregressive:** U-Net, U-Net$_{ut}$, U-Net$_{tn}$, ResNet, ResNet-dil, Refiner.
+4.  **Attention / Graph-Based:** TF-Enc, TF-MGN, TF-VAE.
+
+### Empirical Conclusions: Expressivity vs. Stability
+Our results quantify the core trade-off in PDE surrogate modeling. Highly non-linear models (such as $\text{U-Net}_{ut}$ and ACDM) capture slightly more high-frequency stochastic texture in the short term, yielding lower MSEs on the 60-step $Inc_{high}$ and $Tra_{ext}$ regimes. 
+
+However, this short-term expressivity comes at a severe cost to long-horizon stability and inference efficiency. By strictly enforcing a global linear structure in the KAE's latent space, we completely bypass the iterative numerical solvers and autoregressive sampling procedures required by the 13 other baselines. 
+
+Because we evaluate the latent state exactly via analytical matrix exponentiation ($z(\tau) = \exp(\mathbf{K}_{\text{cont}}\tau) z_0$), we achieve a staggering **inference speedup of >40,000$\times$** over diffusion models ($0.00104$ ms vs $41.77$ ms) and **>5,000$\times$** over continuous U-Nets ($0.00104$ ms vs $6.16$ ms). Furthermore, while highly expressive autoregressive models (FNO-32, Refiner) catastrophically diverge over extended windows, the Continuous-Time KAE achieves state-of-the-art stability on the extreme 240-step $Tra_{long}$ forecasting task.
+
+---
+
+### Table A: Inference Speed and Memory Efficiency Profiling
+*Profiling conducted over a 240-step rollout. The Continuous-Time KAE operates orders of magnitude faster than all evaluated baselines due to $O(1)$ latent state evaluation.*
+
+| Architecture | Avg. Step Inference (ms) | Mean VRAM (MB) |
+| :--- | :--- | :--- |
+| ResNet-m2 | $3.67 \pm 0.04$ | $188.0$ |
+| Dil-ResNet-m2 | $3.46 \pm 0.02$ | $\mathbf{178.6}$ |
+| FNO-16 | $1.17 \pm 0.01$ | $184.1$ |
+| FNO-32 | $1.17 \pm 0.00$ | $183.9$ |
+| UNet-m2 | $6.19 \pm 0.09$ | $183.7$ |
+| UNet-m8 | $6.16 \pm 0.01$ | $184.1$ |
+| TF-Enc | $0.60 \pm 0.25$ | $3448.6$ |
+| TF-MGN | $0.69 \pm 0.01$ | $3498.0$ |
+| TF-VAE | $0.30 \pm 0.01$ | $13749.9$ |
+| Refiner-R4 | $10.31 \pm 0.02$ | $642.4$ |
+| **Continuous KAE (Ours)** | **$\mathbf{0.00104 \pm 0.0001}$** | $2751.3$ |
+| ACDM | $41.77 \pm 0.01$ | $659.2$ |
+| ACDM$_{ncn}$ | $41.70 \pm 0.06$ | $649.2$ |
 
 ---
 
 ### Table B: Complete Quantitative Split Comparison (MSE)
-*Performance evaluated across both short-term extrapolation ($Inc_{low}$, $Inc_{high}$, $Tra_{ext}$, $Tra_{int}$) and the critical long-horizon rollout ($Tra_{long}$, 240 steps). Note the catastrophic divergence of several standard baselines over extended horizons, contrasting with the KAE's bounded stability.*
+*Performance evaluated across both short-term extrapolation ($Inc_{low}$, $Inc_{high}$, $Tra_{ext}$, $Tra_{int}$) and the critical long-horizon rollout ($Tra_{long}$, 240 steps). Note the catastrophic divergence of several standard baselines over extended horizons.*
 
 | Method | $Inc_{low}$ ($\times 10^{-4}$) | $Inc_{high}$ ($\times 10^{-5}$) | $Tra_{ext}$ ($\times 10^{-3}$) | $Tra_{int}$ ($\times 10^{-3}$) | $Tra_{long}$ ($\times 10^{-3}$) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| $\text{U-Net}_{ut}$ | $\mathbf{0.8 \pm 1.1}$ | $\mathbf{0.2 \pm 0.1}$ | $1.6 \pm 0.7$ | $1.5 \pm 1.5$ | $22.2 \pm 3.6$ |
-| $\text{ACDM}_{ncn}$ | $0.9 \pm 0.8$ | $5.7 \pm 2.7$ | $4.1 \pm 1.9$ | $2.8 \pm 1.3$ | $22.8 \pm 3.8$ |
-| $\text{U-Net}_{tn}$ | $1.0 \pm 1.0$ | $0.9 \pm 0.6$ | $1.4 \pm 0.8$ | $1.8 \pm 1.1$ | $22.4 \pm 3.9$ |
-| U-Net | $1.0 \pm 1.1$ | $2.7 \pm 0.6$ | $3.1 \pm 2.1$ | $2.3 \pm 2.0$ | $30.3 \pm 6.1$ |
-| Refiner | $1.3 \pm 1.4$ | $3.5 \pm 2.2$ | $5.4 \pm 2.1$ | $7.1 \pm 2.1$ | *Diverged* |
-| $\text{TF}_{Enc}$ | $1.5 \pm 1.7$ | $8.7 \pm 3.8$ | $\mathbf{1.0 \pm 0.3}$ | $1.8 \pm 0.3$ | $22.2 \pm 3.9$ |
-| ResNet-dil | $1.6 \pm 1.8$ | $2.6 \pm 0.7$ | $1.2 \pm 0.3$ | $\mathbf{1.0 \pm 0.5}$ | $22.0 \pm 2.4$ |
-| ACDM | $1.7 \pm 2.2$ | $0.8 \pm 0.4$ | $2.3 \pm 1.4$ | $2.7 \pm 2.1$ | $22.6 \pm 4.0$ |
-| $\text{FNO}_{16}$ | $2.8 \pm 3.1$ | $8.9 \pm 3.8$ | $4.8 \pm 1.2$ | $5.5 \pm 2.6$ | $20.8 \pm 2.0$ |
-| $\text{TF}_{VAE}$ | $5.4 \pm 5.5$ | $4.1 \pm 1.4$ | $2.4 \pm 0.2$ | $2.7 \pm 0.6$ | $20.6 \pm 2.1$ |
-| $\text{TF}_{MGN}$ | $5.7 \pm 4.3$ | $10.0 \pm 2.9$ | $3.9 \pm 1.0$ | $6.3 \pm 4.4$ | $18.9 \pm 4.5$ |
 | ResNet | $10.0 \pm 9.1$ | $16.0 \pm 3.0$ | $2.3 \pm 0.9$ | $1.8 \pm 1.0$ | $24.2 \pm 4.6$ |
+| ResNet-dil | $1.6 \pm 1.8$ | $2.6 \pm 0.7$ | $1.2 \pm 0.3$ | $\mathbf{1.0 \pm 0.5}$ | $22.0 \pm 2.4$ |
+| $\text{FNO}_{16}$ | $2.8 \pm 3.1$ | $8.9 \pm 3.8$ | $4.8 \pm 1.2$ | $5.5 \pm 2.6$ | $20.8 \pm 2.0$ |
 | $\text{FNO}_{32}$ | $160 \pm 50$ | $1000 \pm 140$ | $4.9 \pm 1.9$ | $6.8 \pm 3.4$ | *Diverged* |
+| $\text{TF}_{MGN}$ | $5.7 \pm 4.3$ | $10.0 \pm 2.9$ | $3.9 \pm 1.0$ | $6.3 \pm 4.4$ | $18.9 \pm 4.5$ |
+| $\text{TF}_{Enc}$ | $1.5 \pm 1.7$ | $8.7 \pm 3.8$ | $\mathbf{1.0 \pm 0.3}$ | $1.8 \pm 0.3$ | $22.2 \pm 3.9$ |
+| $\text{TF}_{VAE}$ | $5.4 \pm 5.5$ | $4.1 \pm 1.4$ | $2.4 \pm 0.2$ | $2.7 \pm 0.6$ | $20.6 \pm 2.1$ |
+| U-Net | $1.0 \pm 1.1$ | $2.7 \pm 0.6$ | $3.1 \pm 2.1$ | $2.3 \pm 2.0$ | $30.3 \pm 6.1$ |
+| $\text{U-Net}_{ut}$ | $\mathbf{0.8 \pm 1.1}$ | $\mathbf{0.2 \pm 0.1}$ | $1.6 \pm 0.7$ | $1.5 \pm 1.5$ | $22.2 \pm 3.6$ |
+| $\text{U-Net}_{tn}$ | $1.0 \pm 1.0$ | $0.9 \pm 0.6$ | $1.4 \pm 0.8$ | $1.8 \pm 1.1$ | $22.4 \pm 3.9$ |
+| Refiner | $1.3 \pm 1.4$ | $3.5 \pm 2.2$ | $5.4 \pm 2.1$ | $7.1 \pm 2.1$ | *Diverged* |
+| $\text{ACDM}_{ncn}$ | $0.9 \pm 0.8$ | $5.7 \pm 2.7$ | $4.1 \pm 1.9$ | $2.8 \pm 1.3$ | $22.8 \pm 3.8$ |
+| ACDM | $1.7 \pm 2.2$ | $0.8 \pm 0.4$ | $2.3 \pm 1.4$ | $2.7 \pm 2.1$ | $22.6 \pm 4.0$ |
 | **Continuous KAE (Ours)** | **$1.3 \pm 1.7$** | **$2.9 \pm 1.1$** | **$2.2 \pm 0.9$** | **$5.2 \pm 2.4$** | **$\mathbf{14.9 \pm 1.3}$** |
 
 ---
@@ -94,14 +114,14 @@ To empirically validate the structural priors of our architecture, we conducted 
 
 The empirical results (detailed in Table C below) explicitly validate our hypotheses regarding the trade-offs between expressivity, overfitting, and autoregressive stability in continuous-time spaces.
 
-### Deep Dive A: The Generalization Boundary (LoRA vs. Full-Rank MLP)
+### Observation A: The Generalization Boundary (LoRA vs. Full-Rank MLP)
 Reviewer z2Gs correctly hypothesized that an MLP parameterization provides greater theoretical expressivity. To test this, we implemented a full-rank mode where a neural network directly predicts the entire $N_z \times N_z$ Koopman generator matrix from the physical conditions ($\phi$). While this full-rank MLP successfully preserves the linear latent space required for our $O(1)$ matrix exponentiation, it fundamentally fails at out-of-distribution generalization.
 
 * **The Empirical Proof:** As shown in Table C, while the MLP performs adequately on interpolation tasks, it suffers a severe degradation in extrapolation performance. On the low-Reynolds incompressible task ($Inc_{low}$), the MSE spikes nearly an order of magnitude, from **$1.3 \times 10^{-4}$ to $10.4 \times 10^{-4}$**.
 * **The Structural Mechanism:** Predicting a full-rank matrix directly from physical parameters scales quadratically at $O(N_z^2)$. In the context of fluid dynamics, this massive parameter space allows the model to overfit to the spurious, high-frequency spatial correlations specific to the training Reynolds/Mach numbers. 
 * **The LoRA Advantage:** Inspired by parameter-efficient fine-tuning literature [Hu et al., 2021], our LoRA formulation resolves this by anchoring the dynamics to a globally stable, regime-invariant base matrix $\mathbf{K}_0$. The low-rank updates ($O(2rN_z)$) act as a powerful **structural regularizer**, restricting the continuous generator from deviating too radically from the stable base flow. This proves that for PDE forecasting, restricting degrees of freedom via low-rank updates is strictly necessary for robust physical extrapolation.
 
-### Deep Dive B: Mitigating Chaotic Drift (Cosine vs. Uniform Weighting)
+### Observation B: Mitigating Chaotic Drift (Cosine vs. Uniform Weighting)
 A fundamental challenge in learning latent ODEs is the accumulation of integration errors over long autoregressive rollouts. We ablated our $\mathcal{L}_{\text{pred}}$ loss weighting to prove the necessity of the Cosine schedule.
 
 * **The Empirical Proof:** On the relatively smooth Incompressible dataset, both schedules converge to identical minima. However, on the highly chaotic Transonic dataset—where shock waves interact dynamically with the vortex street—the Cosine schedule strictly outperforms uniform weighting. It reduces the extreme 240-step $Tra_{long}$ MSE from **$17.0 \times 10^{-3}$ to $14.9 \times 10^{-3}$**.
@@ -127,19 +147,19 @@ To ensure the mathematical integrity of our latent space, our architecture relie
 
 The empirical results (detailed in Table D below) confirm that enforcing these theoretical boundaries is strictly necessary to prevent long-horizon catastrophic drift.
 
-### Deep Dive A: Continuous-Time Invertibility (The Azencot Generalization)
+### Observation A: Continuous-Time Invertibility (The Azencot Generalization)
 Reviewer z2Gs correctly identified the Consistent Koopman Autoencoder (Azencot et al., 2020) as the closest theoretical cousin to our consistency objective. Azencot enforces operator invertibility to prevent trivial "shrink-to-zero" solutions by learning discrete forward ($A$) and backward ($B$) weight matrices and penalizing $AB \neq I$. 
 
 * **Our Generalization:** We formalize our latent consistency loss ($\mathcal{L}_{\text{lin}}$) as the exact continuous-time counterpart of this theory. Because we learn a single continuous generator $\mathbf{K}_{\text{cont}}$, we enforce forward-backward trajectory consistency by integrating the dynamics at $\Delta t$ and $-\Delta t$. This mathematically guarantees $e^{\mathbf{K}\Delta t} e^{-\mathbf{K}\Delta t} = I$ without requiring separate matrices.
 * **The Empirical Proof:** Removing this continuous invertibility constraint directly degrades performance across all tasks, most notably causing the long-horizon 240-step MSE to spike from **$14.9 \times 10^{-3}$ to $18.5 \times 10^{-3}$**, proving that continuous-time operator invertibility is essential for asymptotic stability.
 
-### Deep Dive B: Takens' Delay Embedding (History Encoder)
+### Observation B: Takens' Delay Embedding (History Encoder)
 Reviewer RCnK questioned the dynamical justification of utilizing both a history encoder and a present encoder. 
 
 * **The Theoretical Mechanism:** Fluid flows in observable space are inherently non-Markovian due to hidden state variables (e.g., extracting pressure and density purely from velocity observations). Following **Takens' delay embedding theorem**, a single spatial snapshot is dynamically insufficient to initialize a valid Koopman state. Processing the immediate past ($x_{t_{i-1}}$) alongside the present ($x_{t_i}$) acts as a first-order temporal derivative proxy.
 * **The Empirical Proof:** Forcing the model into a strictly Markovian initialization (removing the history encoder) causes the latent space to lose critical phase-space information. This results in the highest long-term structural deformation among the ablations, jumping to an MSE of **$18.6 \times 10^{-3}$**.
 
-### Deep Dive C: Structural Regularization (Sobolev & Spectral Norms)
+### Observation C: Structural Regularization (Sobolev & Spectral Norms)
 Addressing Reviewer RCnK's feedback regarding terminology, we clarified that our framework utilizes structural regularizers rather than embedding explicit Navier-Stokes equations. 
 * **The Mechanism:** We apply Sobolev losses to enforce spatial gradient consistency (preserving sharp shock waves) and temporal derivative matching, alongside a Fourier spectral consistency loss to lock onto correct shedding frequencies. 
 * **The Empirical Proof:** Removing these structural priors results in blurred wavefronts and pacing errors, degrading long-horizon accuracy from $14.9$ to $19.3$.
@@ -167,14 +187,14 @@ A fundamental advantage of learning a continuous-time generator ($\mathbf{K}_{\t
 
 The empirical results (detailed in Table E) and high-resolution visual alignments (Figures 1 and 2) confirm both the numerical robustness of the generator and its zero-shot temporal super-resolution capabilities.
 
-### Deep Dive A: Numerical Stiffness & Adaptive Solver Stability
+### Observation A: Numerical Stiffness & Adaptive Solver Stability
 Reviewer B4CM correctly pointed out that evaluating adaptive solvers is critical for continuous-time models. We evaluated the continuous-time KAE's latent ODE across varying integration steps to test the boundaries of absolute stability.
 
 * **The Empirical Proof:** At small step sizes ($\Delta t \le 0.15s$), all solvers perform comparably. Furthermore, the adaptive `Dopri5` solver perfectly matches the standard `RK4` performance across all evaluated intervals, proving our continuous generator does not suffer from jagged, discontinuous gradients that typically disrupt adaptive step-size controllers.
 * **The Physical Mechanism (Why Euler Fails):** As the integration step size increases to massive bounds ($\Delta t = 1.00s$), weak first-order solvers like `Euler` and `Midpoint` diverge catastrophically into numerical infinity ($\sim 10^{13} - 10^{19}$). **This divergence is actually proof of a mathematically sound physical model.** Because our Koopman operator accurately captures the dissipative, high-frequency modes of fluid turbulence, the resulting ODE is mathematically "stiff." At $\Delta t = 1.00s$, the explicit Euler method exits its region of absolute stability for these large negative eigenvalues, causing numerical blow-up. 
 * **The RK4/Dopri5 Advantage:** Higher-order Runge-Kutta methods (like `RK4` and `Dopri5`) possess much larger stability regions in the complex plane. They successfully encompass the stiff dissipative eigenvalues of our Koopman operator, maintaining strict stability and bounded errors even at a $1.00s$ jump step.
 
-### Deep Dive B: Exact Analytical Integration & Zero-Shot Generalization
+### Observation B: Exact Analytical Integration & Zero-Shot Generalization
 While ODE solvers demonstrate the model's robustness, the ultimate advantage of our architecture is that the strictly linear latent space allows us to bypass numerical integration entirely at inference. 
 
 * **The Mechanism:** We can compute the exact analytical solution via the matrix exponential: $z(\tau) = \exp(\mathbf{K}_{\text{cont}}\tau)z_0$. 
@@ -220,7 +240,7 @@ Reviewer Ge7F correctly identified a fundamental theoretical boundary of finite-
 
 To comprehensively address this, we rigorously analyzed the spectral properties of our learned continuous generator. Rather than viewing this truncation as a pure defect, our empirical and mathematical analyses prove that this spectral bias acts as a **physical low-pass filter**, deliberately trading short-term chaotic textural expressivity for extreme, mathematically guaranteed long-horizon stability.
 
-### Deep Dive A: Spectral Bias as a Physical Low-Pass Filter
+### Observation A: Spectral Bias as a Physical Low-Pass Filter
 To quantify the exact nature of the closure error, we performed a Fast Fourier Transform (FFT) analysis on both the spatial and temporal domains of the generated flow fields.
 
 * **Spatial Domain (High-Frequency Truncation):** Fluid turbulence transfers energy from large to small scales. As shown in the spatial wavenumber plot (Figure 1, right), the diffusion baseline (ACDM) synthesizes these fine-scale textures, maintaining energy at high wavenumbers. Conversely, the Continuous KAE exhibits a steeper energy drop-off. It mathematically smooths out fine-scale, unpredictable turbulent textures, effectively acting as a spatial low-pass filter.
@@ -229,7 +249,7 @@ To quantify the exact nature of the closure error, we performed a Fast Fourier T
 ![Spectral Analysis](figures/fig7_premultiplied_grid_longer_250.png)
 *Figure 1: Temporal (left) and Spatial (right) frequency analysis. The KAE successfully captures the dominant physical shedding frequencies while safely suppressing the high-frequency turbulent noise that causes standard autoregressive models to diverge.*
 
-### Deep Dive B: Mathematical Proof of Stability via Eigenvalue Spectrum
+### Observation B: Mathematical Proof of Stability via Eigenvalue Spectrum
 While the frequency analysis demonstrates *what* the model is doing, the eigenvalue spectrum of the latent ODE demonstrates *why* it is mathematically stable. 
 
 For a linear continuous-time dynamical system defined by $\frac{dz}{dt} = \mathbf{K}z$, the system is strictly asymptotically stable if the real parts of all eigenvalues of $\mathbf{K}$ are negative ($Re(\lambda) < 0$). 
@@ -251,13 +271,13 @@ To definitively prove the practical value of the spectral dissipativity identifi
 
 The empirical results and quantitative metrics (plotted in Figure 3) reveal a stark contrast between the failure modes of unconstrained generative models and mathematically bounded Koopman operators.
 
-### Deep Dive A: The Anatomy of Autoregressive Divergence (Diffusion Baseline)
+### Observation A: The Anatomy of Autoregressive Divergence (Diffusion Baseline)
 Highly expressive generative models like ACDM prioritize step-to-step perceptual fidelity by stochastically synthesizing fine-scale turbulent textures. However, without a global structural constraint, this becomes their fatal flaw over extreme horizons.
 
 * **The Physical Mechanism:** At each autoregressive step, the diffusion model injects minor stochastic hallucinations to create texture. In highly chaotic fluid regimes (like Transonic flows), the "butterfly effect" dictates that these microscopic phase errors compound exponentially. 
 * **The Empirical Proof:** As shown in Figure 3, the unconstrained diffusion baseline completely loses structural coherence. Its relative $L_2$ error spikes erratically with massive variance, while the spatial Pearson correlation drops precipitously toward zero. The physical structure of the fluid collapses completely into unphysical numerical noise.
 
-### Deep Dive B: Graceful Degradation and Limit Cycles (Continuous KAE)
+### Observation B: Graceful Degradation and Limit Cycles (Continuous KAE)
 Our Continuous-Time KAE takes the opposite approach: it strictly prioritizes global topological stability over localized stochastic texture.
 
 * **The Physical Mechanism:** Because the latent space evolution is governed exactly by the linear ODE $\frac{dz}{dt} = \mathbf{K}z$, the trajectory is mathematically bounded by the dissipative eigenvalues of the operator. Errors physically *cannot* compound to infinity. As the rollout progresses, high-frequency transient errors naturally decay, leaving only the dominant, stable eigenmodes.
@@ -288,13 +308,13 @@ To ground these metrics in physical reality, we provide visual snapshots of the 
 
 A critical vulnerability of standard discrete-time surrogates (including standard Koopman Autoencoders and autoregressive U-Nets) is their rigid dependence on the temporal sampling rate of the training data. To directly address Reviewer RCnK’s inquiry regarding the internal consistency of our continuous formulation, we provide definitive empirical proof that our model learns a mathematically rigorous, time-invariant continuous generator.
 
-### Deep Dive A: Mathematical Consistency (Analytical vs. Numerical Integration)
+### Observation A: Mathematical Consistency (Analytical vs. Numerical Integration)
 If the model has genuinely learned a continuous-time linear ODE ($\frac{dz}{dt} = \mathbf{K}z$), the trajectories generated by step-by-step numerical integration must perfectly match the exact closed-form analytical solution. 
 
 * **The Mechanism:** We compared trajectories generated by standard 4th-order Runge-Kutta (RK4) numerical integration against the direct, single-step analytical matrix exponential: $z(\tau) = \exp(\mathbf{K}_{\text{cont}}\tau)z_0$. 
 * **The Empirical Proof:** As shown in Figure 5 across both the Incompressible and highly chaotic Transonic regimes, the visual and phase alignment between the numerical and analytical methods is flawless. This internal consistency definitively proves that our $O(1)$ fast-forwarding inference capability is mathematically sound, allowing us to safely bypass iterative solvers entirely during deployment.
 
-### Deep Dive B: Zero-Shot Temporal Super-Resolution
+### Observation B: Zero-Shot Temporal Super-Resolution
 Because the latent dynamics are parameterized in continuous time, the model can be queried at arbitrary, fractional time horizons $\tau$ that it has never seen before.
 
 * **The Empirical Proof:** Although the model was strictly trained on a temporal discretization of $\Delta t = 0.10s$, we evaluated it zero-shot at untrained temporal resolutions, including a finer super-resolution step ($\Delta t=0.05s$) and a coarser jump step ($\Delta t=0.20s$). 
@@ -324,7 +344,7 @@ While raw aggregate MSE metrics can occasionally favor stochastic models in chao
 
 The visual and statistical evidence confirms a fundamental dichotomy: the Continuous KAE produces localized, deterministic boundary errors, whereas the generative baseline suffers from diffuse stochastic drift and catastrophic heavy-tailed failures.
 
-### Deep Dive A: Spatial Error Morphology (Transonic Regimes)
+### Observation A: Spatial Error Morphology (Transonic Regimes)
 In the highly chaotic Transonic dataset, shock waves interact violently with the vortex street. We plotted the absolute error maps to isolate exactly where the surrogate models fail to capture this physics.
 
 * **The Continuous KAE Signature:** Because our model enforces smooth, globally consistent structural alignment, its errors are entirely deterministic. As seen in Figures 5 and 6, KAE errors are tightly bounded and localized almost exclusively along sharp spatial discontinuities (e.g., the precise boundaries of the transonic shock fronts). The background fluid domain remains pristine.
@@ -339,7 +359,7 @@ In the highly chaotic Transonic dataset, shock waves interact violently with the
 ![Difference Maps Longer](figures/difference_maps_longer.png)
 *Figure 6: Spatial error distribution in the extreme long-rollout regime ($Tra_{long}$). The KAE maintains structural stability with tightly localized errors, while ACDM's stochastic noise pollutes the entire wake.*
 
-### Deep Dive B: Distributional Robustness & Heavy Tails (Incompressible Regimes)
+### Observation B: Distributional Robustness & Heavy Tails (Incompressible Regimes)
 To understand the reliability of the models across different turbulence levels, we analyzed the statistical distribution of the field-wise MSE across all test trajectories.
 
 * **Heavy-Tailed Catastrophic Failures:** As shown in the violin plots (Figure 7), both models perform comparably at benign, low Reynolds numbers. However, the highly turbulent High-Reynolds regime exposes the fragility of unconstrained generative sampling. ACDM exhibits pronounced, heavy-tailed error distributions—these long upper tails correspond to severe, catastrophic prediction failures on specific trajectories. 
