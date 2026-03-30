@@ -50,13 +50,13 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 We fully agree with the reviewers that contextualizing our Continuous-Time KAE requires a broader lens than autoregressive diffusion models alone. To provide a definitive assessment of our method within the current landscape of PDE forecasting, we conducted a comprehensive benchmarking effort, evaluating **14 distinct spatial-temporal surrogate models**.
 
 To ensure a rigorous analysis, these baselines span four dominant architectural paradigms:
-1.  **Generative / Probabilistic:** ACDM, ACDM$_{ncn}$ (State-of-the-art for high-frequency flow synthesis).
-2.  **Spectral / Neural Operators:** FNO-16, FNO-32 (Standard baselines for resolution-invariant PDE solving).
-3.  **Convolutional / Data-Space Autoregressive:** U-Net, U-Net$_{ut}$, U-Net$_{tn}$, ResNet, ResNet-dil, Refiner.
-4.  **Attention / Graph-Based:** TF-Enc, TF-MGN, TF-VAE.
+1.  **Generative / Probabilistic:** $ACDM$, $ACDM_{ncn}$ (State-of-the-art for high-frequency flow synthesis).
+2.  **Spectral / Neural Operators:** $FNO-16$, $FNO-32$ (Standard baselines for resolution-invariant PDE solving).
+3.  **Convolutional / Data-Space Autoregressive:** $U-Net$, $U-Net_{ut}$, $U-Net_{tn}$, $ResNet$, $ResNet-dil$, $Refiner$.
+4.  **Attention / Graph-Based:** $TF-Enc$, $TF-MGN$, $TF-VAE$.
 
 ### Empirical Conclusions: Expressivity vs. Stability
-Our results quantify the core trade-off in PDE surrogate modeling. Highly non-linear models (such as $\text{U-Net}_{ut}$ and ACDM) capture slightly more high-frequency stochastic texture in the short term, yielding lower MSEs on the 60-step $Inc_{high}$ and $Tra_{ext}$ regimes. 
+Our results quantify the core trade-off in PDE surrogate modeling. Highly non-linear models (such as $U-Net_{ut}$ and ACDM) capture slightly more high-frequency stochastic texture in the short term, yielding lower MSEs on the 60-step $Inc_{high}$ and $Tra_{ext}$ regimes. 
 
 However, this short-term expressivity comes at a severe cost to long-horizon stability and inference efficiency. By strictly enforcing a global linear structure in the KAE's latent space, we completely bypass the iterative numerical solvers and autoregressive sampling procedures required by the 13 other baselines. 
 
