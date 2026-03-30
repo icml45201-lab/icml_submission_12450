@@ -36,7 +36,7 @@ Note the severe degradation in the Extrapolation regimes ($Inc_{low}$, $Tra_{ext
 | Base (Unconditional)| Cosine | 116.5 ± 31.0 | 2991.2 ± 12.5| 13.9 ± 0.8 | 21.0 ± 2.7 | 18.1 ± 1.7 |
 ---
 
-## 3. Continuous-Time "Consistent Koopman" & Structural Ablations
+## Continuous-Time "Consistent Koopman" & Structural Ablations
 **Addressed to:** *Reviewer z2Gs (Comparison to Azencot et al., 2020), Reviewer RCnK (History encoder justification and structural regularization terminology).*
 
 To ensure the mathematical integrity of our latent space, our architecture relies on specific structural constraints rather than arbitrary black-box layers. We performed an exhaustive ablation study isolating our latent consistency formulations, our history encoder, and our structural regularizers.
