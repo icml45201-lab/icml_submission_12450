@@ -242,7 +242,9 @@ For a linear continuous-time dynamical system defined by $\frac{dz}{dt} = \mathb
 <p align="center">
   <img src="figures/eigenvalues_spectrum.png" width="45%" alt="Eigenvalue Spectrum" />
 </p>
-*Figure 2: Eigenvalue spectrum of the learned continuous-time operator. The strictly negative real parts mathematically guarantee dissipative latent dynamics, neutralizing compounding autoregressive errors.*
+<p align="center">
+  <b>Figure 2:</b> Eigenvalue spectrum of the learned continuous-time operator. The strictly negative real parts mathematically guarantee dissipative latent dynamics, neutralizing compounding autoregressive errors.
+</p>
 
 ---
 
