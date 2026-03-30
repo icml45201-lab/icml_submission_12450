@@ -111,7 +111,7 @@ A fundamental challenge in learning latent ODEs is the accumulation of integrati
 ---
 
 ### Table C: Architectural and Weighting Ablations (MSE)
-*Note the severe degradation in the Extrapolation regimes ($Inc_{low}$, $Tra_{ext}$) when the structural regularization of LoRA is removed in favor of the Full-Rank MLP, demonstrating the critical necessity of low-rank parameterization for out-of-distribution physical generalization.*
+Note the severe degradation in the Extrapolation regimes ($Inc_{low}$, $Tra_{ext}$) when the structural regularization of LoRA is removed in favor of the Full-Rank MLP, demonstrating the critical necessity of low-rank parameterization for out-of-distribution physical generalization.
 
 | Conditioning Parameterization | Temporal Weighting | $Inc_{low}$ MSE ($\times 10^{-4}$) | $Inc_{high}$ MSE ($\times 10^{-5}$) | $Tra_{ext}$ MSE ($\times 10^{-3}$) | $Tra_{int}$ MSE ($\times 10^{-3}$) | $Tra_{long}$ MSE ($\times 10^{-3}$) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
