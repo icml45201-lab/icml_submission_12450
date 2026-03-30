@@ -17,7 +17,7 @@ Please navigate to the detailed markdown files below for full experimental setup
   * Validation of continuous-time invertibility constraints.
 * **[3. ODE Solvers & Temporal Generalization](./3_solver_generalization.md)**
   * Stress-testing the latent ODE across 7 numerical integrators (including adaptive `Dopri5`).
-  * Demonstration of zero-shot temporal super-resolution and irregular sampling ($\Delta t = 0.05$s to $1.00$s).
+  * Demonstration of zero-shot temporal super-resolution and irregular sampling ($\Delta t$ = 0.05s to 1.00s).
 * **[4. Long-Horizon Stability & Spectral Analysis](./4_spectral_long_horizon.md)**
   * FFT spectral analysis of the latent closure problem (spatial low-pass filtering vs. phase locking).
   * Extreme 1000-step autoregressive rollout comparisons (Limit cycle stability vs. Diffusion divergence).
