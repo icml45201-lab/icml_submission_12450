@@ -202,12 +202,13 @@ While ODE solvers demonstrate the model's robustness, the ultimate advantage of 
 
 ---
 
-### Visualizing Temporal Generalization
 <p align="center">
   <img src="figures/data_highRey_vort_rk4_tight.png" width="48%" alt="RK4 Incompressible" />
   <img src="figures/data_extrap_pres_rk4_tight.png" width="48%" alt="RK4 Transonic" />
 </p>
-**Figure 1:** Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at Re = $1000$ (Left) and transonic flow pressure at Ma = $0.50$ (Right).
+<p align="center">
+  <b>Figure 1:</b> Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at Re = 1000 (Left) and transonic flow pressure at Ma = 0.50 (Right).
+</p>
 
 <p align="center">
   <img src="figures/delta_t_comparison.png" width="80%" alt="Delta T Comparison" />
