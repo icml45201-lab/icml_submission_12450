@@ -18,7 +18,7 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 
 ---
 ### Table A: Comprehensive Quantitative Comparison (Accuracy, Speed, & Memory)
-Performance evaluated across short-term extrapolation ($Inc$, $Tra$) and the critical 240-step rollout ($Tra_{long}$). Profiling conducted on a single A100 GPU. KAE achieves the highest long-horizon stability while maintaining a near-zero inference cost.
+Performance evaluated across short-term extrapolation ($Inc$, $Tra$) and the critical 240-step rollout ($Tra_{long}$). Profiling conducted on a single RTX4090 GPU. KAE achieves the highest long-horizon stability while maintaining a near-zero inference cost.
 
 | Method | Inc_low (1e-4) | Inc_high (1e-5) | Tra_ext (1e-3) | Tra_int (1e-3) | Tra_long† (1e-3) | Inf. Time (ms/step) | Speedup | VRAM (MB) |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
