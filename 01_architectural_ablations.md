@@ -56,8 +56,8 @@ This document details the ablation studies requested by reviewers to evaluate th
 **Table 2 Legend:** Ablation of individual structural and consistency components evaluated on the Transonic regime. We evaluate the **Original Proposed Model** against variants removing specific constraints:
 * **w/o Directional Cosine:** Removes the cosine similarity component from the latent loss mix used for trajectory alignment.
 * **w/o Latent Energy Norm:** Replaces the multi-component latent loss mix with a simple L2 norm between true and predicted latent states.
-* **w/o Azencot Consistency:** Removes the generalized continuous-time consistency operator (enforcing operator invertibility via $e^{\mathbf{K}\Delta t} e^{-\mathbf{K}\Delta t} = I$).
-* **w/o History Encoder:** Removes the past-state snapshot, forcing a strictly Markovian ($t \to t+1$) initialization without Takens' delay embedding.
+* **w/o Azencot Consistency:** Isolates the generalized continuous-time consistency operator (enforcing $e^{\mathbf{K}\Delta t} e^{-\mathbf{K}\Delta t} = I$) by removing all other latent similarity and energy-based losses.
+* * **w/o History Encoder:** Removes the past-state snapshot, forcing a strictly Markovian ($t \to t+1$) initialization without Takens' delay embedding.
 * **w/o Structural Regularizers:** Removes the Sobolev (gradient) and Fourier spectral norms (physics-based spatial/frequency priors). 
 
 Metrics include Mean Squared Error (MSE) and Learned Perceptual Similarity (LSiM) for structural fidelity.
