@@ -1,46 +1,58 @@
-# High-Resolution Spatial Error & Distribution Analysis
+# Spatial Error Maps & Distribution Analysis
 
-**Reviewer Comments Addressed:**
-* **z2Gs**: Plot absolute error fields instead of raw fields to visualize where the model drifts or fails.
+This document provides the absolute spatial difference fields ($|\text{Prediction} - \text{Ground Truth}|$) and error distribution analysis requested by reviewers to visualize exact failure modes and model drift.
 
+### 1. Spatial Error Morphology
+**Addressed to:** Reviewer z2Gs (Plot absolute error fields instead of raw fields)
 
-While raw aggregate MSE metrics can occasionally favor stochastic models in chaotic flows, relying solely on spatial averages completely obscures the true physical morphology of the predictive errors. To definitively answer Reviewer z2Gs's inquiry, we computed absolute spatial difference fields ($|\text{Prediction} - \text{Ground Truth}|$) and conducted a fine-grained distributional analysis. 
+**Experiment:** We computed the absolute spatial difference fields for the Transonic dataset to isolate where the surrogate models fail to capture complex physics (e.g., shock wave interactions).
 
-The visual and statistical evidence confirms a fundamental dichotomy: the Continuous KAE produces localized, deterministic boundary errors, whereas the generative baseline suffers from diffuse stochastic drift and catastrophic heavy-tailed failures.
+**Observations:**
+* **Continuous KAE (Localized Errors):** KAE errors are tightly bounded and localized almost exclusively along sharp spatial discontinuities (the transonic shock fronts). The background fluid domain remains clean, indicating stable structural alignment.
+* **ACDM (Diffuse Errors):** The autoregressive diffusion baseline exhibits widespread stochastic noise across the entire fluid domain. It fails to preserve global phase coherence, resulting in a scattered "salt-and-pepper" error distribution.
 
-### Observation A: Spatial Error Morphology (Transonic Regimes)
-In the highly chaotic Transonic dataset, shock waves interact violently with the vortex street. We plotted the absolute error maps to isolate exactly where the surrogate models fail to capture this physics.
-
-* **The Continuous KAE Signature:** Because our model enforces smooth, globally consistent structural alignment, its errors are entirely deterministic. As seen in Figures 9 and 10, KAE errors are tightly bounded and localized almost exclusively along sharp spatial discontinuities (e.g., the precise boundaries of the transonic shock fronts). The background fluid domain remains pristine.
-* **The Diffusion Signature (ACDM):** In stark contrast, the autoregressive diffusion baseline exhibits diffuse, widespread stochastic noise across the entire fluid domain. It fails to preserve global phase coherence, resulting in a "salt-and-pepper" error distribution that physically degrades the entire flow field over long rollouts.
+<br>
 
 <p align="center">
   <img src="figures/difference_maps_interp.png" width="48%" alt="Diff Map Interp" />
   <img src="figures/difference_maps_extrap.png" width="48%" alt="Diff Map Extrap" />
-  <b>Figure 9:</b> Absolute error distribution in Transonic Interpolation (Left) and Extrapolation (Right). KAE errors are concentrated precisely at the sharp shock fronts, whereas ACDM exhibits broad, unphysical spatial noise.
+</p>
+<p align="center">
+  <b>Figure 1:</b> Absolute error distribution in Transonic Interpolation (Left) and Extrapolation (Right). KAE errors concentrate at shock fronts; ACDM exhibits broader spatial noise.
 </p>
 
 <p align="center">
   <img src="figures/difference_maps_longer.png" width="90%" alt="Difference Maps Longer" />
 </p>
 <p align="center">
-  <b>Figure 10:</b> Spatial error distribution in the extreme long-rollout regime ($Tra\_{\text{long}}$). The KAE maintains structural stability with tightly localized errors, while ACDM's stochastic noise pollutes the entire wake.
+  <b>Figure 2:</b> Spatial error distribution in the 240-step rollout regime ($Tra_{long}$). KAE maintains structural bounds, while ACDM introduces stochastic noise across the wake.
 </p>
 
-### Observation B: Distributional Robustness & Heavy Tails (Incompressible Regimes)
-To understand the reliability of the models across different turbulence levels, we analyzed the statistical distribution of the field-wise MSE across all test trajectories.
+---
 
-* **Heavy-Tailed Catastrophic Failures:** As shown in the violin plots (Figure 11), both models perform comparably at benign, low Reynolds numbers. However, the highly turbulent High-Reynolds regime exposes the fragility of unconstrained generative sampling. ACDM exhibits pronounced, heavy-tailed error distributions—these long upper tails correspond to severe, catastrophic prediction failures on specific trajectories. 
-* **Strictly Controlled Variance:** Conversely, the Continuous KAE maintains a tightly compressed error distribution with strictly controlled variance. As shown in the temporal tracking (Figure 12), ACDM suffers from accelerated compounding error growth over time, while the KAE maintains mathematically stable error scaling. This proves our method possesses far superior robustness for critical engineering applications where worst-case failure bounds must be guaranteed.
+### 2. Error Distribution & Variance Tracking
+**Addressed to:** Reviewer z2Gs (Visualizing model failure and drift)
+
+**Experiment:** We analyzed the statistical distribution of the field-wise MSE across all test trajectories in both low and high Reynolds number (Incompressible) regimes to evaluate reliability.
+
+**Observations:**
+* **Distribution Tails (Figure 3):** Both models perform comparably at low Reynolds numbers. In the highly turbulent High-Reynolds regime, ACDM exhibits a heavy-tailed error distribution, indicating larger prediction failures on specific trajectories. The KAE maintains a tightly compressed distribution with strictly controlled variance.
+* **Temporal Error Growth (Figure 4):** Tracking MSE over time reveals that ACDM suffers from compounding error growth, while the KAE maintains stable, bounded error scaling across the rollout horizon.
+
+<br>
 
 <p align="center">
   <img src="figures/lowRey_violin_mse_distribution.png" width="48%" alt="Low Rey Violin" />
   <img src="figures/highRey_violin_mse_distribution.png" width="48%" alt="High Rey Violin" />
-  <b>Figure 11:</b> Error distributions under Low (left) and High (right) Reynolds number regimes. Note the dangerous heavy tails in the stochastic baseline at higher Reynolds numbers, contrasting with the KAE's bounded variance.
-
+</p>
+<p align="center">
+  <b>Figure 3:</b> Error distributions under Low (left) and High (right) Reynolds number regimes. ACDM shows heavier error tails at higher Reynolds numbers, whereas KAE maintains bounded variance.
 </p>
 
 <p align="center">
   <img src="figures/highRey_temporal_mse_per_field.png" width="48%" alt="High Rey Temporal" />
   <img src="figures/highRey_line_mse_vs_Re_fieldwise.png" width="48%" alt="High Rey Fieldwise" />
-  <b>Figure 12:</b> Temporal evolution of field-wise MSE (left) and MSE scaling vs. Reynolds number (right). The Continuous KAE suppresses compounding errors, maintaining stable trajectory growth over long horizons.
+</p>
+<p align="center">
+  <b>Figure 4:</b> Temporal evolution of field-wise MSE (left) and MSE scaling vs. Reynolds number (right). The Continuous KAE suppresses compounding errors over the temporal horizon.
+</p>
