@@ -183,7 +183,7 @@ Addressing Reviewer RCnK's feedback regarding terminology, we clarified that our
 ## 4. Extreme ODE Solver Stress-Testing & Temporal Super-Resolution
 **Addressed to:** *Reviewer B4CM (Request to evaluate adaptive-step ODE solvers like Dopri5 and assess temporal integration robustness).*
 
-A fundamental advantage of learning a continuous-time generator ($\mathbf{K}_{\text{cont}}$) is the strict decoupling of the latent dynamics from the temporal resolution of the training data. To definitively prove the mathematical soundness of our learned ODE, we conducted a massive stress-test across 7 distinct numerical integrators—including adaptive-step methods like `Dopri5` [Dormand & Prince, 1980] and `Adaptive Heun`—across integration step sizes ranging from $\Delta t = 0.05s$ up to an extreme $\Delta t = 1.00s$ (a 10$\times$ extrapolation beyond the training resolution).
+A fundamental advantage of learning a continuous-time generator ($\mathbf{K}_{\text{cont}}$) is the strict decoupling of the latent dynamics from the temporal resolution of the training data. To definitively prove the mathematical soundness of our learned ODE, we conducted a massive stress-test across 7 distinct numerical integrators—including adaptive-step methods like `Dopri5` [Dormand & Prince, 1980] and `Adaptive Heun`—across integration step sizes ranging from $\Delta t = 0.05s$ up to an extreme $\Delta t = 1.00s$ (a 10 $\times$ extrapolation beyond the training resolution).
 
 The empirical results (detailed in Table E) and high-resolution visual alignments (Figures 1 and 2) confirm both the numerical robustness of the generator and its zero-shot temporal super-resolution capabilities.
 
