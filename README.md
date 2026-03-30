@@ -35,6 +35,3 @@ For convenience, the core empirical findings established in these new documents 
 2. **Infinite-Horizon Bounded Stability:** Eigenvalue spectrum analysis proves the learned continuous operator is strictly dissipative ($Re(\lambda) < 0$). In extreme 1000-step stress tests, the KAE successfully degrades into a stable, physically consistent limit cycle, whereas unconstrained generative models (ACDM) and neural operators (FNO-32) suffer from compounding exponential error and collapse into structural noise.
 3. **Zero-Shot Temporal Interpolation:** Numerical integration (`RK4`, `Dopri5`) perfectly aligns with the analytical closed-form solution. This allows the model to be evaluated zero-shot at untrained, irregular temporal resolutions (e.g., interpolating at $\Delta t=0.05$s from $\Delta t=0.10$s training data) without retraining or performance degradation.
 4. **Structural Regularization:** Predicting full-rank matrices ($O(N_z^2)$) causes catastrophic out-of-distribution overfitting in physical forecasting. Ablations confirm that the proposed Low-Rank Adaptation (LoRA) bottleneck is strictly necessary as a structural regularizer to achieve out-of-distribution physical generalization (e.g., varying Reynolds/Mach numbers).
-
----
-*Note: Code to reproduce these specific rebuttal experiments will be merged into the main codebase upon de-anonymization.*
