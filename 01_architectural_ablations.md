@@ -29,6 +29,8 @@ This document details the ablation studies requested by reviewers to evaluate th
 | MLP (Full-Rank) | Cosine | 10.4 ± 17.5 | 21.4 ± 7.1 | 3.6 ± 1.0 | 5.7 ± 3.0 | 15.1 ± 1.9 |
 | Base (Unconditional)| Cosine | 116.5 ± 31.0 | 2991.2 ± 12.5| 13.9 ± 0.8 | 21.0 ± 2.7 | 18.1 ± 1.7 |
 
+**Table 1 Legend:** Quantitative comparison of operator conditioning methods and temporal loss weighting. Performance is reported as MSE across five datasets. **LoRA (Proposed)** uses a low-rank bottleneck for parameter-efficient conditioning, while **Full-Rank MLP** predicts the entire operator matrix directly. **Cosine** refers to our decaying temporal weighting schedule, and **Uniform** applies equal weighting across the entire rollout. **Base (Unconditional)** represents a single, regime-invariant Koopman operator without physical parameter conditioning.
+
 ---
 
 ### 3. Structural Constraints & Consistency
@@ -50,3 +52,12 @@ This document details the ablation studies requested by reviewers to evaluate th
 | w/o Azencot Consistency | 2.6 ± 0.6 | 3.3 ± 0.3 | 5.8 ± 2.7 | 4.0 ± 0.3 | 18.5 ± 1.4 | 6.5 ± 0.3 |
 | w/o History Encoder | 2.6 ± 0.8 | 3.6 ± 0.5 | 5.9 ± 3.5 | 3.7 ± 0.3 | 18.6 ± 0.5 | 7.4 ± 0.3 |
 | w/o Structural Regularizers| 2.5 ± 0.5 | 3.5 ± 0.4 | 5.6 ± 2.3 | 3.7 ± 0.2 | 19.3 ± 1.2 | 6.6 ± 0.4 |
+
+**Table 2 Legend:** Ablation of individual structural and consistency components evaluated on the Transonic regime. We evaluate the **Original Proposed Model** against variants removing specific constraints:
+* **w/o Directional Cosine:** Removes the cosine similarity component from the latent loss mix used for trajectory alignment.
+* **w/o Latent Energy Norm:** Replaces the multi-component latent loss mix with a simple L2 norm between true and predicted latent states.
+* **w/o Azencot Consistency:** Removes the generalized continuous-time consistency operator (enforcing operator invertibility via $e^{\mathbf{K}\Delta t} e^{-\mathbf{K}\Delta t} = I$).
+* **w/o History Encoder:** Removes the past-state snapshot, forcing a strictly Markovian ($t \to t+1$) initialization without Takens' delay embedding.
+* **w/o Structural Regularizers:** Removes the Sobolev (gradient) and Fourier spectral norms (physics-based spatial/frequency priors). 
+
+Metrics include Mean Squared Error (MSE) and Learned Perceptual Similarity (LSiM) for structural fidelity.
