@@ -61,7 +61,7 @@ Profiling conducted over a 240-step rollout. The Continuous-Time KAE operates or
 | Refiner-R4 | $10.31 \pm 0.02$ | $642.4$ |
 | **Continuous KAE (Ours)** | **$\mathbf{0.00104 \pm 0.0001}$** | $2751.3$ |
 | ACDM | $41.77 \pm 0.01$ | $659.2$ |
-| ACDM$_{ncn}$ | $41.70 \pm 0.06$ | $649.2$ |
+| $ACDM_{ncn}$ | $41.70 \pm 0.06$ | $649.2$ |
 
 ---
 
