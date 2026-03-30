@@ -30,9 +30,9 @@ To address reviewer inquiries with the highest level of empirical rigor, we have
 We fully agree with the reviewers that contextualizing our Continuous-Time KAE requires a broader lens than autoregressive diffusion models alone. To provide a definitive and irrefutable assessment of where our method sits within the current landscape of PDE forecasting, we conducted a massive benchmarking effort, evaluating **14 distinct spatial-temporal surrogate models**. 
 
 To ensure a comprehensive analysis, these baselines span four dominant architectural paradigms:
-1. **Generative / Probabilistic:** ACDM, ACDM $_{ncn}$ *(State-of-the-art for high-frequency flow synthesis)*
+1. **Generative / Probabilistic:** ACDM, $ACDM_{ncn}$ *(State-of-the-art for high-frequency flow synthesis)*
 2. **Spectral / Neural Operators:** FNO-16, FNO-32 *(Standard baselines for resolution-invariant PDE solving)*
-3. **Convolutional / Data-Space Autoregressive:** U-Net, U-Net $_{ut}$, U-Net $_{tn}$, ResNet, ResNet-dil, Refiner
+3. **Convolutional / Data-Space Autoregressive:** U-Net, $U-Net {ut}$, $U-Net_{tn}$, ResNet, ResNet-dil, Refiner
 4. **Attention / Graph-Based:** TF-Enc, TF-MGN, TF-VAE
 
 ### Empirical Conclusions: The Expressivity vs. Stability Trade-off
