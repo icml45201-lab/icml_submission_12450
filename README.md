@@ -207,12 +207,12 @@ While ODE solvers demonstrate the model's robustness, the ultimate advantage of 
   <img src="figures/data_highRey_vort_rk4_tight.png" width="48%" alt="RK4 Incompressible" />
   <img src="figures/data_extrap_pres_rk4_tight.png" width="48%" alt="RK4 Transonic" />
 </p>
-*Figure 1: Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at $Re=1000$ (Left) and transonic flow pressure at $Ma=0.50$ (Right).*
+*Figure 1*: Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at $Re=1000$ (Left) and transonic flow pressure at $Ma=0.50$ (Right).
 
 <p align="center">
   <img src="figures/delta_t_comparison.png" width="80%" alt="Delta T Comparison" />
 </p>
-*Figure 2: Zero-shot temporal super-resolution. Evaluated at the exact same physical time boundaries, the numerical RK4 integrator run at different, unseen step sizes ($\Delta t=0.05s, 0.20s$) perfectly maps onto the direct analytical matrix exponentiation (top row).*
+*Figure 2*: Zero-shot temporal super-resolution. Evaluated at the exact same physical time boundaries, the numerical RK4 integrator run at different, unseen step sizes ($\Delta t=0.05s, 0.20s$) perfectly maps onto the direct analytical matrix exponentiation (top row).
 
 ## 5. The "Closure Problem": Spectral Bias & Eigenvalue Analysis
 **Addressed to:** *Reviewer Ge7F (Inquiry regarding closure errors when truncating infinite-dimensional chaotic features into a finite-dimensional linear operator).*
