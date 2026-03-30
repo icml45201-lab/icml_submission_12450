@@ -5,7 +5,7 @@ This document details the ablation studies requested by reviewers to evaluate th
 ### 1. Operator Parameterization: LoRA vs. Full-Rank MLP 
 **Addressed to:** Reviewer z2Gs (Motivation for LoRA vs. MLP)
 
-**Experiment:**  We compared our default Low-Rank Adaptation (LoRA) parameterization of the Koopman operator against a full-rank MLP ($K\_{\mathrm{cont}} = \mathrm{MLP}(\phi)$) and an unconditional base model. 
+**Experiment:**  We compared our default Low-Rank Adaptation (LoRA) parameterization of the Koopman operator against a full-rank MLP ($\mathbf{K}_{\text{cont}} = \text{MLP}(\phi)$) and an unconditional base model. 
 
 **Observations (Table 1):**
 * **Expressivity vs. Overfitting:** The full-rank MLP performs adequately on interpolation tasks but degrades significantly on out-of-distribution extrapolation. For example, on the low-Reynolds task ($Inc_{low}$), MSE increases from $1.3 \times 10^{-4}$ (LoRA) to $10.4 \times 10^{-4}$ (MLP).
