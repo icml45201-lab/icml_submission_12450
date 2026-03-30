@@ -10,7 +10,7 @@ Please navigate to the detailed markdown files below for full experimental setup
 
 * **[1. Baseline Comparisons & Inference Efficiency](./1_baseline_comparisons.md)**
   * Expanded benchmarking against 13 spatial-temporal surrogate models (Diffusion, FNO, U-Net, ResNet, Transformer).
-  * Profiling of the $O(1)$ inference speedup (>40,000x faster than ACDM).
+  * Profiling of the $O(1)$ inference speedup (>110x faster than ACDM).
 * **[2. Ablation Studies: Architecture & Loss](./2_ablation_studies.md)**
   * Empirical justification for LoRA parameterization vs. Full-Rank MLP.
   * Isolation of the temporal cosine weighting schedule and Takens' delay embedding (history encoder).
