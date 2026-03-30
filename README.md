@@ -197,8 +197,8 @@ While ODE solvers demonstrate the model's robustness, the ultimate advantage of 
 | | Euler | 19.1 ± 0.8 | 20.9 ± 3.3 | $4.88 \times 10^{14}$ |
 | **1.00 s** | **RK4** | **6.0 ± 0.5** | **9.7 ± 2.4** | **15.1 ± 2.0** |
 | | **Dopri5** | **8.5 ± 1.1** | **8.1 ± 3.5** | **14.7 ± 1.4** |
-| | Euler | 13.2 ± 0.6 | 20.0 ± 2.3 | *Diverged ($7.14 \times 10^{13}$)* |
-| | Midpoint | 16.8 ± 0.6 | 11.0 ± 2.1 | *Diverged ($3.44 \times 10^{19}$)* |
+| | Euler | 13.2 ± 0.6 | 20.0 ± 2.3 | *Diverged* ($7.14 \times 10^{13}$) |
+| | Midpoint | 16.8 ± 0.6 | 11.0 ± 2.1 | *Diverged* ($3.44 \times 10^{19}$) |
 
 ---
 
