@@ -211,9 +211,11 @@ While ODE solvers demonstrate the model's robustness, the ultimate advantage of 
 </p>
 
 <p align="center">
-  <img src="figures/delta_t_comparison.png" width="80%" alt="Delta T Comparison" />
+  <img src="figures/eigenvalues_spectrum.png" width="45%" alt="Eigenvalue Spectrum" />
 </p>
-*Figure 2*: Zero-shot temporal super-resolution. Evaluated at the exact same physical time boundaries, the numerical RK4 integrator run at different, unseen step sizes ($\Delta t=0.05s, 0.20s$) perfectly maps onto the direct analytical matrix exponentiation (top row).
+<p align="center">
+  <b>Figure 2:</b> Eigenvalue spectrum of the learned continuous-time operator. The strictly negative real parts mathematically guarantee dissipative latent dynamics, neutralizing compounding autoregressive errors.
+</p>
 
 ## 5. The "Closure Problem": Spectral Bias & Eigenvalue Analysis
 **Addressed to:** *Reviewer Ge7F (Inquiry regarding closure errors when truncating infinite-dimensional chaotic features into a finite-dimensional linear operator).*
