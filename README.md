@@ -211,7 +211,7 @@ While ODE solvers demonstrate the model's robustness, the ultimate advantage of 
 </p>
 
 <p align="center">
-  <img src="figures/eigenvalues_spectrum.png" width="45%" alt="Eigenvalue Spectrum" />
+  <img src="figures/delta_t_comparison.png" width="80%" alt="Delta T Comparison" />
 </p>
 <p align="center">
   <b>Figure 2:</b> Eigenvalue spectrum of the learned continuous-time operator. The strictly negative real parts mathematically guarantee dissipative latent dynamics, neutralizing compounding autoregressive errors.
