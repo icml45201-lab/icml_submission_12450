@@ -343,7 +343,7 @@ In the highly chaotic Transonic dataset, shock waves interact violently with the
 </p>
 
 ![Difference Maps Longer](figures/difference_maps_longer.png)
-*Figure 6: Spatial error distribution in the extreme long-rollout regime ($Tra_{long}$). The KAE maintains structural stability with tightly localized errors, while ACDM's stochastic noise pollutes the entire wake.*
+Figure 6: Spatial error distribution in the extreme long-rollout regime ($Tra_{long}$). The KAE maintains structural stability with tightly localized errors, while ACDM's stochastic noise pollutes the entire wake.
 
 ### Observation B: Distributional Robustness & Heavy Tails (Incompressible Regimes)
 To understand the reliability of the models across different turbulence levels, we analyzed the statistical distribution of the field-wise MSE across all test trajectories.
