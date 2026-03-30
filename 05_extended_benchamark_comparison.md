@@ -14,7 +14,7 @@ Our expanded results rigorously quantify the core trade-off of our proposed arch
 
 However, this short-term expressivity comes at a severe cost to long-horizon stability and inference efficiency. By strictly enforcing a global linear structure in the KAE's latent space, we completely bypass the iterative numerical solvers and autoregressive sampling procedures required by the 13 other baselines. 
 
-Because we evaluate the latent state exactly via analytical matrix exponentiation $z(\tau)=\exp(\mathbf{K}_{\mathrm{cont}}\tau)z_0$, we achieve a substantial **inference speedup of >40×** over diffusion models (1.11 ms vs 41.77 ms) and **>5×** over continuous U-Nets (1.11 ms vs 6.16 ms). Furthermore, while highly expressive autoregressive models (FNO-32, Refiner) diverge over long horizons, our Continuous-Time KAE establishes state-of-the-art stability on the extreme 240-step Tra_long forecasting task.
+By strictly enforcing a global linear structure in the KAE's latent space, we completely bypass iterative numerical solvers and autoregressive sampling. Evaluating the latent state exactly via analytical matrix exponentiation ($z(\tau) = \exp(\mathbf{K}_{\mathrm{cont}}\tau) z_0$) yields a substantial **Latent-space speedup of ~110×** over state-of-the-art diffusion models. Notably, while expressive autoregressive models (FNO-32, Refiner) catastrophically diverge, our KAE establishes state-of-the-art stability on the extreme 240-step $Tra_{long}$ task.
 
 ---
 ### Table A: Comprehensive Quantitative Comparison (Accuracy, Speed, & Memory)
@@ -34,10 +34,9 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 | **$U-Net_{ut}$** | $\mathbf{0.8 \pm 1.1}$ | $\mathbf{0.2 \pm 0.1}$ | $1.6 \pm 0.7$ | $1.5 \pm 1.5$ | $22.2 \pm 3.6$ | $6.16$ | **×7** | $184.1$ |
 | **$U-Net_{tn}$** | $1.0 \pm 1.0$ | $0.9 \pm 0.6$ | $1.4 \pm 0.8$ | $1.8 \pm 1.1$ | $22.4 \pm 3.9$ | $6.16$ | **×7** | $184.1$ |
 | **$Refiner$** | $1.3 \pm 1.4$ | $3.5 \pm 2.2$ | $5.4 \pm 2.1$ | $7.1 \pm 2.1$ | *Diverged* | $10.31$ | **×4** | $642.4$ |
-| **ACDM_ncn** | 0.9 ± 0.8 | 5.7 ± 2.7 | 4.1 ± 1.9 | 2.8 ± 1.3 | 22.8 ± 3.8 | 531.70 | **×1** | 649.2 |
-| **ACDM** | 1.7 ± 2.2 | 0.8 ± 0.4 | 2.3 ± 1.4 | 2.7 ± 2.1 | 22.6 ± 4.0 | 531.89 | **×1** | 659.2 |
-| **KAE (Ours)** | 1.3 ± 1.7 | 2.9 ± 1.1 | 2.2 ± 0.9 | 5.2 ± 2.4 | **14.9 ± 1.3** | **6.05** | **×88** | 2751.3 |
-
+| **$ACDM_ncn$** | 0.9 ± 0.8 | 5.7 ± 2.7 | 4.1 ± 1.9 | 2.8 ± 1.3 | 22.8 ± 3.8 | 126.3 | **×1** | 649.2 |
+| **$ACDM$** | 1.7 ± 2.2 | 0.8 ± 0.4 | 2.3 ± 1.4 | 2.7 ± 2.1 | 22.6 ± 4.0 | 126.57 | **×1** | 659.2 |
+| **$KAE (Ours)$** | 1.3 ± 1.7 | 2.9 ± 1.1 | 2.2 ± 0.9 | 5.2 ± 2.4 | **14.9 ± 1.3** | **1.15** | **×110** | 2751.3 |
 
 ---
 $^\dagger$ **Note:** $Tra_{long}$ results computed for this rebuttal to establish long-horizon limits; not present in the original ACDM paper. Best per column in **bold**.
