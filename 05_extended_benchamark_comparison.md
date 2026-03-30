@@ -18,24 +18,24 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 
 ---
 ### Table A: Comprehensive Quantitative Comparison (Accuracy, Speed, & Memory)
-*Performance evaluated across short-term extrapolation ($Inc$, $Tra$) and the critical 240-step rollout ($Tra_{long}$). Profiling conducted on a single A100 GPU. KAE achieves the highest long-horizon stability while maintaining a near-zero inference cost.*
+Performance evaluated across short-term extrapolation ($Inc$, $Tra$) and the critical 240-step rollout ($Tra_{long}$). Profiling conducted on a single A100 GPU. KAE achieves the highest long-horizon stability while maintaining a near-zero inference cost.
 
 | **Method** | **$Inc_{low}$** \tiny{($10^{-4}$)} | **$Inc_{high}$** \tiny{($10^{-5}$)} | **$Tra_{ext}$** \tiny{($10^{-3}$)} | **$Tra_{int}$** \tiny{($10^{-3}$)} | **$Tra_{long}^\dagger$** \tiny{($10^{-3}$)} | **Inf. Time** \tiny{(ms/step)} | **Speedup** | **VRAM** \tiny{(MB)} |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ResNet** | $10.0 \pm 9.1$ | $16.0 \pm 3.0$ | $2.3 \pm 0.9$ | $1.8 \pm 1.0$ | $24.2 \pm 4.6$ | $3.67$ | **×11** | $188.0$ |
-| **ResNet-dil** | $1.6 \pm 1.8$ | $2.6 \pm 0.7$ | $1.2 \pm 0.3$ | $\mathbf{1.0 \pm 0.5}$ | $22.0 \pm 2.4$ | $3.46$ | **×12** | $\mathbf{178.6}$ |
-| **FNO-16** | $2.8 \pm 3.1$ | $8.9 \pm 3.8$ | $4.8 \pm 1.2$ | $5.5 \pm 2.6$ | $20.8 \pm 2.0$ | $1.17$ | **×35** | $184.1$ |
-| **FNO-32** | $160 \pm 50$ | $1000 \pm 140$ | $4.9 \pm 1.9$ | $6.8 \pm 3.4$ | *Diverged* | $1.17$ | **×35** | $183.9$ |
-| **TF-Enc** | $1.5 \pm 1.7$ | $8.7 \pm 3.8$ | $\mathbf{1.0 \pm 0.3}$ | $1.8 \pm 0.3$ | $22.2 \pm 3.9$ | $0.60$ | **×70** | $3448.6$ |
-| **TF-MGN** | $5.7 \pm 4.3$ | $10.0 \pm 2.9$ | $3.9 \pm 1.0$ | $6.3 \pm 4.4$ | $18.9 \pm 4.5$ | $0.69$ | **×60** | $3498.0$ |
-| **TF-VAE** | $5.4 \pm 5.5$ | $4.1 \pm 1.4$ | $2.4 \pm 0.2$ | $2.7 \pm 0.6$ | $20.6 \pm 2.1$ | $0.30$ | **×139** | $13749.9$ |
-| **U-Net** | $1.0 \pm 1.1$ | $2.7 \pm 0.6$ | $3.1 \pm 2.1$ | $2.3 \pm 2.0$ | $30.3 \pm 6.1$ | $6.19$ | **×7** | $183.7$ |
-| **U-Net$_{ut}$** | $\mathbf{0.8 \pm 1.1}$ | $\mathbf{0.2 \pm 0.1}$ | $1.6 \pm 0.7$ | $1.5 \pm 1.5$ | $22.2 \pm 3.6$ | $6.16$ | **×7** | $184.1$ |
-| **U-Net$_{tn}$** | $1.0 \pm 1.0$ | $0.9 \pm 0.6$ | $1.4 \pm 0.8$ | $1.8 \pm 1.1$ | $22.4 \pm 3.9$ | $6.16$ | **×7** | $184.1$ |
-| **Refiner** | $1.3 \pm 1.4$ | $3.5 \pm 2.2$ | $5.4 \pm 2.1$ | $7.1 \pm 2.1$ | *Diverged* | $10.31$ | **×4** | $642.4$ |
-| **ACDM$_{ncn}$** | $0.9 \pm 0.8$ | $5.7 \pm 2.7$ | $4.1 \pm 1.9$ | $2.8 \pm 1.3$ | $22.8 \pm 3.8$ | $41.70$ | **×1** | $649.2$ |
-| **ACDM** | $1.7 \pm 2.2$ | $0.8 \pm 0.4$ | $2.3 \pm 1.4$ | $2.7 \pm 2.1$ | $22.6 \pm 4.0$ | $41.77$ | **×1** | $659.2$ |
-| **KAE (Ours)** | $1.3 \pm 1.7$ | $2.9 \pm 1.1$ | $2.2 \pm 0.9$ | $5.2 \pm 2.4$ | $\mathbf{14.9 \pm 1.3}$ | $\mathbf{0.001}$ | **×41,770** | $2751.3$ |
+| **$ResNet$** | $10.0 \pm 9.1$ | $16.0 \pm 3.0$ | $2.3 \pm 0.9$ | $1.8 \pm 1.0$ | $24.2 \pm 4.6$ | $3.67$ | **×11** | $188.0$ |
+| **$ResNet-dil$** | $1.6 \pm 1.8$ | $2.6 \pm 0.7$ | $1.2 \pm 0.3$ | $\mathbf{1.0 \pm 0.5}$ | $22.0 \pm 2.4$ | $3.46$ | **×12** | $\mathbf{178.6}$ |
+| **$FNO-16$** | $2.8 \pm 3.1$ | $8.9 \pm 3.8$ | $4.8 \pm 1.2$ | $5.5 \pm 2.6$ | $20.8 \pm 2.0$ | $1.17$ | **×35** | $184.1$ |
+| **$FNO-32$** | $160 \pm 50$ | $1000 \pm 140$ | $4.9 \pm 1.9$ | $6.8 \pm 3.4$ | *Diverged* | $1.17$ | **×35** | $183.9$ |
+| **$TF-Enc$** | $1.5 \pm 1.7$ | $8.7 \pm 3.8$ | $\mathbf{1.0 \pm 0.3}$ | $1.8 \pm 0.3$ | $22.2 \pm 3.9$ | $0.60$ | **×70** | $3448.6$ |
+| **$TF-MGN$** | $5.7 \pm 4.3$ | $10.0 \pm 2.9$ | $3.9 \pm 1.0$ | $6.3 \pm 4.4$ | $18.9 \pm 4.5$ | $0.69$ | **×60** | $3498.0$ |
+| **$TF-VAE$** | $5.4 \pm 5.5$ | $4.1 \pm 1.4$ | $2.4 \pm 0.2$ | $2.7 \pm 0.6$ | $20.6 \pm 2.1$ | $0.30$ | **×139** | $13749.9$ |
+| **$U-Net$** | $1.0 \pm 1.1$ | $2.7 \pm 0.6$ | $3.1 \pm 2.1$ | $2.3 \pm 2.0$ | $30.3 \pm 6.1$ | $6.19$ | **×7** | $183.7$ |
+| **$U-Net_{ut}$** | $\mathbf{0.8 \pm 1.1}$ | $\mathbf{0.2 \pm 0.1}$ | $1.6 \pm 0.7$ | $1.5 \pm 1.5$ | $22.2 \pm 3.6$ | $6.16$ | **×7** | $184.1$ |
+| **$U-Net$_tn}$** | $1.0 \pm 1.0$ | $0.9 \pm 0.6$ | $1.4 \pm 0.8$ | $1.8 \pm 1.1$ | $22.4 \pm 3.9$ | $6.16$ | **×7** | $184.1$ |
+| **$Refiner$** | $1.3 \pm 1.4$ | $3.5 \pm 2.2$ | $5.4 \pm 2.1$ | $7.1 \pm 2.1$ | *Diverged* | $10.31$ | **×4** | $642.4$ |
+| **$ACDM_{ncn}$** | $0.9 \pm 0.8$ | $5.7 \pm 2.7$ | $4.1 \pm 1.9$ | $2.8 \pm 1.3$ | $22.8 \pm 3.8$ | $41.70$ | **×1** | $649.2$ |
+| **$ACDM$** | $1.7 \pm 2.2$ | $0.8 \pm 0.4$ | $2.3 \pm 1.4$ | $2.7 \pm 2.1$ | $22.6 \pm 4.0$ | $41.77$ | **×1** | $659.2$ |
+| **$KAE (Ours)$** | $1.3 \pm 1.7$ | $2.9 \pm 1.1$ | $2.2 \pm 0.9$ | $5.2 \pm 2.4$ | $\mathbf{14.9 \pm 1.3}$ | $\mathbf{0.001}$ | **×41,770** | $2751.3$ |
 
 
 ---
