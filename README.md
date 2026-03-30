@@ -230,8 +230,12 @@ To quantify the exact nature of the closure error, we performed a Fast Fourier T
 * **Spatial Domain (High-Frequency Truncation):** Fluid turbulence transfers energy from large to small scales. As shown in the spatial wavenumber plot (Figure 1, right), the diffusion baseline (ACDM) synthesizes these fine-scale textures, maintaining energy at high wavenumbers. Conversely, the Continuous KAE exhibits a steeper energy drop-off. It mathematically smooths out fine-scale, unpredictable turbulent textures, effectively acting as a spatial low-pass filter.
 * **Temporal Domain (Macro-Scale Phase Locking):** This high-frequency truncation is actually highly advantageous for autoregressive stability. As shown in the temporal frequency plot (Figure 1, left), by discarding chaotic micro-structures, the KAE is able to accurately identify and lock onto the dominant macro-scale vortex shedding frequencies (the primary energy peaks) with near-zero variance. Unconstrained generative models, by contrast, risk aliasing and phase drift when attempting to step through high-frequency noise over long horizons.
 
-![Spectral Analysis](figures/fig7_premultiplied_grid_longer_250.png)
-*Figure 1: Temporal (left) and Spatial (right) frequency analysis. The KAE successfully captures the dominant physical shedding frequencies while safely suppressing the high-frequency turbulent noise that causes standard autoregressive models to diverge.*
+<p align="center">
+  <img src="figures/fig7_premultiplied_grid_longer_250.png" width="90%" alt="Spectral Analysis" />
+</p>
+<p align="center">
+  <b>Figure 3:</b> Temporal (left) and Spatial (right) frequency analysis. The KAE successfully captures the dominant physical shedding frequencies while safely suppressing the high-frequency turbulent noise that causes standard autoregressive models to diverge.
+</p>
 
 ### Observation B: Mathematical Proof of Stability via Eigenvalue Spectrum
 While the frequency analysis demonstrates *what* the model is doing, the eigenvalue spectrum of the latent ODE demonstrates *why* it is mathematically stable. 
@@ -245,7 +249,7 @@ For a linear continuous-time dynamical system defined by $\frac{dz}{dt} = \mathb
   <img src="figures/eigenvalues_spectrum.png" width="45%" alt="Eigenvalue Spectrum" />
 </p>
 <p align="center">
-  <b>Figure 2:</b> Eigenvalue spectrum of the learned continuous-time operator. The strictly negative real parts mathematically guarantee dissipative latent dynamics, neutralizing compounding autoregressive errors.
+  <b>Figure 4:</b> Eigenvalue spectrum of the learned continuous-time operator. The strictly negative real parts mathematically guarantee dissipative latent dynamics, neutralizing compounding autoregressive errors.
 </p>
 
 ---
@@ -276,7 +280,7 @@ Our Continuous-Time KAE takes the opposite approach: it strictly prioritizes glo
 <p align="center">
   <img src="figures/spatial_correlation_longer.png" width="48%" alt="Spatial Correlation 1000 Steps" />
   <img src="figures/l2_error_rollout_longer.png" width="48%" alt="L2 Error 1000 Steps" />
-  <b>Figure 4:</b> Quantitative metrics over an extreme 1000-step rollout in the Transonic regime. **Left:** Spatial correlation. The unconstrained diffusion baseline (ACDM) decorrelates completely into noise, while the KAE maintains a stable, periodic structural alignment. **Right:** Relative $L_2$ Error. The KAE remains strictly bounded by its linear latent dynamics, while ACDM exhibits severe instability and unbounded variance.
+  <b>Figure 5:</b> Quantitative metrics over an extreme 1000-step rollout in the Transonic regime. **Left:** Spatial correlation. The unconstrained diffusion baseline (ACDM) decorrelates completely into noise, while the KAE maintains a stable, periodic structural alignment. **Right:** Relative $L_2$ Error. The KAE remains strictly bounded by its linear latent dynamics, while ACDM exhibits severe instability and unbounded variance.
 </p>
 
 ### Visualizing the Limit Cycle
@@ -284,7 +288,7 @@ To ground these metrics in physical reality, we provide visual snapshots of the 
 
 <p align="center">
   <img src="figures/data_longer_pres_play.png" width="90%" alt="Visual Rollout 1000 Steps" />
-  <b>Figure 4:</b> Visual snapshots of the pressure field over the 1000-step rollout. While the unconstrained autoregressive diffusion baseline eventually compounds stochastic errors until the physical structure collapses, the Continuous KAE smoothly diffuses the flow into a stable, physically accurate limit cycle without numerical blow-up.
+  <b>Figure 6:</b> Visual snapshots of the pressure field over the 1000-step rollout. While the unconstrained autoregressive diffusion baseline eventually compounds stochastic errors until the physical structure collapses, the Continuous KAE smoothly diffuses the flow into a stable, physically accurate limit cycle without numerical blow-up.
 </p>
 
 ---
@@ -312,13 +316,13 @@ Because the latent dynamics are parameterized in continuous time, the model can 
 
 <p align="center">
   <img src="figures/delta_t_comparison.png" width="80%" alt="Delta T Comparison" />
-  <b>Figure 4:</b> Zero-shot temporal super-resolution. Evaluated at the exact same physical time boundaries, the numerical RK4 integrator run at different, entirely unseen step sizes ($\Delta t=0.05s, 0.20s$) perfectly maps onto the direct analytical matrix exponentiation (top row).
+  <b>Figure 7:</b> Zero-shot temporal super-resolution. Evaluated at the exact same physical time boundaries, the numerical RK4 integrator run at different, entirely unseen step sizes ($\Delta t=0.05s, 0.20s$) perfectly maps onto the direct analytical matrix exponentiation (top row).
 </p>
 
 <p align="center">
   <img src="figures/data_highRey_vort_rk4_tight.png" width="48%" alt="RK4 Incompressible" />
   <img src="figures/data_extrap_pres_rk4_tight.png" width="48%" alt="RK4 Transonic" />
-  <b>Figure 5:</b> Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at $Re=1000$ (Left) and transonic flow pressure at $Ma=0.50$ (Right).
+  <b>Figure 8:</b> Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at $Re=1000$ (Left) and transonic flow pressure at $Ma=0.50$ (Right).
 </p>
 
 ---
@@ -339,11 +343,15 @@ In the highly chaotic Transonic dataset, shock waves interact violently with the
 <p align="center">
   <img src="figures/difference_maps_interp.png" width="48%" alt="Diff Map Interp" />
   <img src="figures/difference_maps_extrap.png" width="48%" alt="Diff Map Extrap" />
-  <b>Figure 5:</b> Absolute error distribution in Transonic Interpolation (Left) and Extrapolation (Right). KAE errors are concentrated precisely at the sharp shock fronts, whereas ACDM exhibits broad, unphysical spatial noise.
+  <b>Figure 9:</b> Absolute error distribution in Transonic Interpolation (Left) and Extrapolation (Right). KAE errors are concentrated precisely at the sharp shock fronts, whereas ACDM exhibits broad, unphysical spatial noise.
 </p>
 
-![Difference Maps Longer](figures/difference_maps_longer.png)
-Figure 6: Spatial error distribution in the extreme long-rollout regime ($Tra_{long}$). The KAE maintains structural stability with tightly localized errors, while ACDM's stochastic noise pollutes the entire wake.
+<p align="center">
+  <img src="figures/difference_maps_longer.png" width="90%" alt="Difference Maps Longer" />
+</p>
+<p align="center">
+  <b>Figure 10:</b> Spatial error distribution in the extreme long-rollout regime ($Tra\_{\text{long}}$). The KAE maintains structural stability with tightly localized errors, while ACDM's stochastic noise pollutes the entire wake.
+</p>
 
 ### Observation B: Distributional Robustness & Heavy Tails (Incompressible Regimes)
 To understand the reliability of the models across different turbulence levels, we analyzed the statistical distribution of the field-wise MSE across all test trajectories.
@@ -354,14 +362,14 @@ To understand the reliability of the models across different turbulence levels, 
 <p align="center">
   <img src="figures/lowRey_violin_mse_distribution.png" width="48%" alt="Low Rey Violin" />
   <img src="figures/highRey_violin_mse_distribution.png" width="48%" alt="High Rey Violin" />
-  <b>Figure 7:</b> Error distributions under Low (left) and High (right) Reynolds number regimes. Note the dangerous heavy tails in the stochastic baseline at higher Reynolds numbers, contrasting with the KAE's bounded variance.
+  <b>Figure 11:</b> Error distributions under Low (left) and High (right) Reynolds number regimes. Note the dangerous heavy tails in the stochastic baseline at higher Reynolds numbers, contrasting with the KAE's bounded variance.
 
 </p>
 
 <p align="center">
   <img src="figures/highRey_temporal_mse_per_field.png" width="48%" alt="High Rey Temporal" />
   <img src="figures/highRey_line_mse_vs_Re_fieldwise.png" width="48%" alt="High Rey Fieldwise" />
-  <b>Figure 8:</b> Temporal evolution of field-wise MSE (left) and MSE scaling vs. Reynolds number (right). The Continuous KAE suppresses compounding errors, maintaining stable trajectory growth over long horizons.
+  <b>Figure 12:</b> Temporal evolution of field-wise MSE (left) and MSE scaling vs. Reynolds number (right). The Continuous KAE suppresses compounding errors, maintaining stable trajectory growth over long horizons.
 </p>
 
 ---
