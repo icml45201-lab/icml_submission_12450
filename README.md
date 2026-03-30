@@ -91,7 +91,7 @@ Performance evaluated across both short-term extrapolation ( $Inc_{low}$, $Inc_{
 ## 2. Architectural Ablations: Operator Parameterization & Weighting
 **Addressed to:** *Reviewer z2Gs (Requests for MLP parameterization vs. LoRA and Cosine vs. Uniform empirical ablations).*
 
-To evaluate the structural priors introduced by our architecture, we conducted ablation studies isolating its two main design choices. Specifically, we compared the default Low-Rank Adaptation (LoRA) parameterization against a full-rank MLP parameterization, written as ( \mathbf{K}_{\mathrm{cont}}=\mathrm{MLP}(\phi) ). We also evaluated the impact of the temporal loss formulation by comparing the proposed decaying cosine weighting schedule against a uniform weighting baseline.
+To evaluate the structural priors introduced by our architecture, we conducted ablation studies isolating its two main design choices. Specifically, we compared the default Low-Rank Adaptation (LoRA) parameterization against a full-rank MLP parameterization, written as ( $\mathbf{K}_{\mathrm{cont}}=\mathrm{MLP}(\phi)$ ). We also evaluated the impact of the temporal loss formulation by comparing the proposed decaying cosine weighting schedule against a uniform weighting baseline.
 
 The empirical results (detailed in Table C below) explicitly validate our hypotheses regarding the trade-offs between expressivity, overfitting, and autoregressive stability in continuous-time spaces.
 
