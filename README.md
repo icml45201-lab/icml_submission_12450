@@ -45,7 +45,7 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 ---
 
 ### Table A: Inference Speed and Memory Efficiency Profiling
-*Profiling conducted over a 240-step rollout. The Continuous-Time KAE operates orders of magnitude faster than all evaluated baselines due to $O(1)$ latent state evaluation.*
+Profiling conducted over a 240-step rollout. The Continuous-Time KAE operates orders of magnitude faster than all evaluated baselines due to $O(1)$ latent state evaluation.
 
 | Architecture | Avg. Step Inference (ms) | Mean VRAM (MB) |
 | :--- | :--- | :--- |
@@ -67,7 +67,7 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 
 
 ### Table B: Complete Quantitative Split Comparison (MSE)
-Performance is reported across short-term extrapolation regimes (Inc_low, Inc_high, Tra_ext, Tra_int) together with the long-horizon rollout benchmark Tra_long (240 steps). Several standard baselines become unstable under extended autoregressive rollout, with divergence observed in the most demanding settings.
+Performance evaluated across both short-term extrapolation ( $Inc_{low}$, $Inc_{high}$, $Tra_{ext}$, $Tra_{int}$ ) and the critical long-horizon rollout ($Tra_{long}$, 240 steps). Note the catastrophic divergence of several standard baselines over extended horizons.
 
 | Method | $Inc_{low}$ ($\times 10^{-4}$) | $Inc_{high}$ ($\times 10^{-5}$) | $Tra_{ext}$ ($\times 10^{-3}$) | $Tra_{int}$ ($\times 10^{-3}$) | $Tra_{long}$ ($\times 10^{-3}$) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
