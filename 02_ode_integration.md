@@ -5,7 +5,7 @@ This document details the evaluation of the learned continuous-time generator ($
 ### 1. Adaptive Solvers & Extreme Step Sizes
 **Addressed to:** Reviewer B4CM (Adaptive-step solvers, irregular sampling)
 
-**Experiment:** We evaluated the continuous-time KAE's latent ODE using multiple numerical integrators—including the adaptive-step `Dopri5`—across integration step sizes ranging from $\Delta t = 0.05$s up to $\Delta t = 1.00$s (a 10x extrapolation beyond the training resolution).
+**Experiment:** We evaluated the continuous-time KAE's latent ODE using multiple numerical integrators—including the adaptive-step `Dopri5`—across integration step sizes ranging from $\Delta t$ = 0.05s up to $\Delta t$ = 1.00s (a 10x extrapolation beyond the training resolution).
 
 **Observations (Table 1):**
 * **Solver Parity at Small Steps:** At step sizes $\Delta t \le 0.15$s, all solvers, including the adaptive `Dopri5`, perform comparably to `RK4`. 
