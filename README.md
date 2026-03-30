@@ -276,16 +276,16 @@ Our Continuous-Time KAE takes the opposite approach: it strictly prioritizes glo
 <p align="center">
   <img src="figures/spatial_correlation_longer.png" width="48%" alt="Spatial Correlation 1000 Steps" />
   <img src="figures/l2_error_rollout_longer.png" width="48%" alt="L2 Error 1000 Steps" />
+  <b>Figure 4:</b> Quantitative metrics over an extreme 1000-step rollout in the Transonic regime. **Left:** Spatial correlation. The unconstrained diffusion baseline (ACDM) decorrelates completely into noise, while the KAE maintains a stable, periodic structural alignment. **Right:** Relative $L_2$ Error. The KAE remains strictly bounded by its linear latent dynamics, while ACDM exhibits severe instability and unbounded variance.
 </p>
-*Figure 3: Quantitative metrics over an extreme 1000-step rollout in the Transonic regime. **Left:** Spatial correlation. The unconstrained diffusion baseline (ACDM) decorrelates completely into noise, while the KAE maintains a stable, periodic structural alignment. **Right:** Relative $L_2$ Error. The KAE remains strictly bounded by its linear latent dynamics, while ACDM exhibits severe instability and unbounded variance.*
 
 ### Visualizing the Limit Cycle
 To ground these metrics in physical reality, we provide visual snapshots of the flow fields at the extreme limits of this rollout.
 
 <p align="center">
   <img src="figures/data_longer_pres_play.png" width="90%" alt="Visual Rollout 1000 Steps" />
+  <b>Figure 4:</b> Visual snapshots of the pressure field over the 1000-step rollout. While the unconstrained autoregressive diffusion baseline eventually compounds stochastic errors until the physical structure collapses, the Continuous KAE smoothly diffuses the flow into a stable, physically accurate limit cycle without numerical blow-up.
 </p>
-*Figure 4: Visual snapshots of the pressure field over the 1000-step rollout. While the unconstrained autoregressive diffusion baseline eventually compounds stochastic errors until the physical structure collapses, the Continuous KAE smoothly diffuses the flow into a stable, physically accurate limit cycle without numerical blow-up.*
 
 ---
 
@@ -312,14 +312,14 @@ Because the latent dynamics are parameterized in continuous time, the model can 
 
 <p align="center">
   <img src="figures/delta_t_comparison.png" width="80%" alt="Delta T Comparison" />
+  <b>Figure 4:</b> Zero-shot temporal super-resolution. Evaluated at the exact same physical time boundaries, the numerical RK4 integrator run at different, entirely unseen step sizes ($\Delta t=0.05s, 0.20s$) perfectly maps onto the direct analytical matrix exponentiation (top row).
 </p>
-*Figure 4: Zero-shot temporal super-resolution. Evaluated at the exact same physical time boundaries, the numerical RK4 integrator run at different, entirely unseen step sizes ($\Delta t=0.05s, 0.20s$) perfectly maps onto the direct analytical matrix exponentiation (top row).*
 
 <p align="center">
   <img src="figures/data_highRey_vort_rk4_tight.png" width="48%" alt="RK4 Incompressible" />
   <img src="figures/data_extrap_pres_rk4_tight.png" width="48%" alt="RK4 Transonic" />
+  <b>Figure 5:</b> Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at $Re=1000$ (Left) and transonic flow pressure at $Ma=0.50$ (Right).
 </p>
-*Figure 5: Phase alignment between numerical RK4 integration and the exact analytical matrix exponential solution. Results are shown for incompressible flow vorticity at $Re=1000$ (Left) and transonic flow pressure at $Ma=0.50$ (Right).*
 
 ---
 
@@ -339,8 +339,8 @@ In the highly chaotic Transonic dataset, shock waves interact violently with the
 <p align="center">
   <img src="figures/difference_maps_interp.png" width="48%" alt="Diff Map Interp" />
   <img src="figures/difference_maps_extrap.png" width="48%" alt="Diff Map Extrap" />
+  <b>Figure 5:</b> Absolute error distribution in Transonic Interpolation (Left) and Extrapolation (Right). KAE errors are concentrated precisely at the sharp shock fronts, whereas ACDM exhibits broad, unphysical spatial noise.
 </p>
-*Figure 5: Absolute error distribution in Transonic Interpolation (Left) and Extrapolation (Right). KAE errors are concentrated precisely at the sharp shock fronts, whereas ACDM exhibits broad, unphysical spatial noise.*
 
 ![Difference Maps Longer](figures/difference_maps_longer.png)
 *Figure 6: Spatial error distribution in the extreme long-rollout regime ($Tra_{long}$). The KAE maintains structural stability with tightly localized errors, while ACDM's stochastic noise pollutes the entire wake.*
@@ -354,14 +354,15 @@ To understand the reliability of the models across different turbulence levels, 
 <p align="center">
   <img src="figures/lowRey_violin_mse_distribution.png" width="48%" alt="Low Rey Violin" />
   <img src="figures/highRey_violin_mse_distribution.png" width="48%" alt="High Rey Violin" />
+  <b>Figure 7:</b> Error distributions under Low (left) and High (right) Reynolds number regimes. Note the dangerous heavy tails in the stochastic baseline at higher Reynolds numbers, contrasting with the KAE's bounded variance.
+
 </p>
-*Figure 7: Error distributions under Low (left) and High (right) Reynolds number regimes. Note the dangerous heavy tails in the stochastic baseline at higher Reynolds numbers, contrasting with the KAE's bounded variance.*
 
 <p align="center">
   <img src="figures/highRey_temporal_mse_per_field.png" width="48%" alt="High Rey Temporal" />
   <img src="figures/highRey_line_mse_vs_Re_fieldwise.png" width="48%" alt="High Rey Fieldwise" />
+  <b>Figure 8:</b> Temporal evolution of field-wise MSE (left) and MSE scaling vs. Reynolds number (right). The Continuous KAE suppresses compounding errors, maintaining stable trajectory growth over long horizons.
 </p>
-*Figure 8: Temporal evolution of field-wise MSE (left) and MSE scaling vs. Reynolds number (right). The Continuous KAE suppresses compounding errors, maintaining stable trajectory growth over long horizons.*
 
 ---
 *End of Supplementary Rebuttal Appendix. We sincerely thank the Area Chair and Reviewers for their time, rigorous critiques, and highly constructive feedback.*
