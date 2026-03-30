@@ -16,7 +16,7 @@ To address reviewer inquiries with the highest level of empirical rigor, we have
 1. [Exhaustive Baseline Benchmarking & O(1) Inference Efficiency](#1-exhaustive-baseline-benchmarking--o1-inference-efficiency)
 2. [Architectural Ablations: Operator Parameterization & Weighting](#2-architectural-ablations-operator-parameterization--weighting)
 3. [Continuous-Time "Consistent Koopman" (Azencot) Ablation](#3-continuous-time-consistent-koopman-azencot-ablation)
-4. [Extreme ODE Solver Stress-Testing ($\Delta t=0.05s$ to $ 1.00s $)](#4-extreme-ode-solver-stress-testing)
+4. [Extreme ODE Solver Stress-Testing (t=0.05s to 1.00s)](#4-extreme-ode-solver-stress-testing)
 5. [The "Closure Problem": Spectral Bias & Eigenvalue Analysis](#5-the-closure-problem-spectral-bias--eigenvalue-analysis)
 6. [Extreme 1000-Step Rollout Stability](#6-extreme-1000-step-rollout-stability)
 7. [Zero-Shot Temporal Generalization & Analytical Integration](#7-zero-shot-temporal-generalization--analytical-integration)
