@@ -14,7 +14,7 @@ Our expanded results rigorously quantify the core trade-off of our proposed arch
 
 However, this short-term expressivity comes at a severe cost to long-horizon stability and inference efficiency. By strictly enforcing a global linear structure in the KAE's latent space, we completely bypass the iterative numerical solvers and autoregressive sampling procedures required by the 13 other baselines. 
 
-By strictly enforcing a global linear structure in the KAE's latent space, we completely bypass iterative numerical solvers and autoregressive sampling. Evaluating the latent state exactly via analytical matrix exponentiation ($z(\tau) = \exp(\mathbf{K}_{\mathrm{cont}}\tau) z_0$) yields a substantial **Latent-space speedup of ~110×** over state-of-the-art diffusion models. Notably, while expressive autoregressive models (FNO-32, Refiner) catastrophically diverge, our KAE establishes state-of-the-art stability on the extreme 240-step $Tra_{long}$ task.
+By strictly enforcing a global linear structure in the KAE's latent space, we completely bypass iterative numerical solvers and autoregressive sampling. Evaluating the latent state exactly via analytical matrix exponentiation ($z(\tau) = \exp(\mathbf{K}\_{\mathrm{cont}}\tau) z_0$) yields a substantial **Latent-space speedup of ~110×** over state-of-the-art diffusion models. Notably, while expressive autoregressive models (FNO-32, Refiner) catastrophically diverge, our KAE establishes state-of-the-art stability on the extreme 240-step $Tra_{long}$ task.
 
 ---
 ### Table A: Comprehensive Quantitative Comparison (Accuracy, Speed, & Memory)
