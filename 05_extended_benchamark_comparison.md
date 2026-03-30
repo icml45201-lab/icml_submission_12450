@@ -18,7 +18,8 @@ Because we evaluate the latent state exactly via analytical matrix exponentiatio
 
 ---
 ### Table A: Comprehensive Quantitative Comparison (Accuracy, Speed, & Memory)
-Performance evaluated across short-term extrapolation ($Inc$, $Tra$) and the critical 240-step rollout ($Tra_{long}$). Profiling conducted on a single RTX4090 GPU. KAE achieves the highest long-horizon stability while maintaining a near-zero inference cost.
+
+**Evaluation Protocol:** To provide a definitive assessment of the Continuous-Time KAE, we benchmarked it against 13 state-of-the-art spatial-temporal models across four architectural paradigms (Spectral, Convolutional, Attention-based, and Generative). Performance is evaluated across short-term extrapolation and interpolation ($Inc$, $Tra$) and a critical 240-step stress test ($Tra_{long}$) to evaluate long-horizon stability. All timing and memory profiling were conducted on a single RTX 4090 GPU using a standardized 240-step rollout to ensure a fair comparison of computational overhead.
 
 | Method | Inc_low (1e-4) | Inc_high (1e-5) | Tra_ext (1e-3) | Tra_int (1e-3) | Tra_long† (1e-3) | Inf. Time (ms/step) | Speedup | VRAM (MB) |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
