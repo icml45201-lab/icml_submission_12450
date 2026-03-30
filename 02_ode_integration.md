@@ -9,8 +9,8 @@ This document details the evaluation of the learned continuous-time generator ($
 
 **Observations (Table 1):**
 * **Solver Parity at Small Steps:** At step sizes $\Delta t$ < 0.15s, all solvers, including the adaptive `Dopri5`, perform comparably to `RK4`. 
-* **Physical Stiffness:** At larger step sizes ($\Delta t$ > 0.50$s), explicit first-order solvers like `Euler` and `Midpoint` diverge numerically ($> 10^{13}$ error). This occurs because the Koopman operator accurately captures dissipative, high-frequency fluid modes, resulting in a mathematically "stiff" ODE.
-* **Higher-Order Stability:** Higher-order methods (`RK4`, `Dopri5`) possess stability regions large enough to encompass these stiff dissipative eigenvalues, maintaining bounded physical stability even at a $ 1.00 $ s jump step.
+* **Physical Stiffness:** At larger step sizes ($\Delta t$ > 0.50s), explicit first-order solvers like `Euler` and `Midpoint` diverge numerically ($> 10^{13}$ error). This occurs because the Koopman operator accurately captures dissipative, high-frequency fluid modes, resulting in a mathematically "stiff" ODE.
+* **Higher-Order Stability:** Higher-order methods (`RK4`, `Dopri5`) possess stability regions large enough to encompass these stiff dissipative eigenvalues, maintaining bounded physical stability even at a 1.00s jump step.
 
 #### Table 1: ODE Solver Stress-Test Across Step Sizes ($\Delta t$)
 
